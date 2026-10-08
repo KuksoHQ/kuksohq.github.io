@@ -1,6 +1,8 @@
 import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import { readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 const config: Config = {
   title: 'Kukso Studios',
@@ -17,6 +19,23 @@ const config: Config = {
   onBrokenAnchors: 'throw',
   markdown: { hooks: { onBrokenMarkdownLinks: 'throw' } },
   i18n: { defaultLocale: 'en', locales: ['en', 'tr'] },
+  plugins: [function preserveHomepageEmailMarkup() {
+    return {
+      name: 'preserve-homepage-email-markup',
+      async postBuild({ outDir }: { outDir: string }) {
+        const homepage = join(outDir, 'index.html');
+        const html = await readFile(homepage, 'utf8');
+        // Cloudflare email rewriting changes React's server-rendered text nodes.
+        // Keep the homepage's intentionally public contact markup intact.
+        // https://developers.cloudflare.com/waf/tools/scrape-shield/email-address-obfuscation/
+        const protectedHtml = html.replace(
+          /<a\b[^>]*href="mailto:tech@kukso\.com(?:\?[^\"]*)?"[^>]*>[\s\S]*?<\/a>/g,
+          '<!--email_off-->$&<!--/email_off-->',
+        );
+        await writeFile(homepage, protectedHtml);
+      },
+    };
+  }],
   presets: [
     ['classic', {
       docs: { sidebarPath: './sidebars.ts' },
