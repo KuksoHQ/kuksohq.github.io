@@ -87,6 +87,27 @@ const loopSteps = [
   },
 ];
 
+const componentPreviews = [
+  {
+    title: 'Voice Dump',
+    image: '/img/gyrolog/capture.webp',
+    alt: 'Voice Dump review screen with two diary drafts assigned to different domains.',
+    caption: 'One spoken thought, shaped into separate diary drafts for review.',
+  },
+  {
+    title: 'Pilot',
+    image: '/img/gyrolog/pilot.webp',
+    alt: 'Pilot conversation preview with a question and a contextual assistant response.',
+    caption: 'A thought partner that connects a question to relevant personal context.',
+  },
+  {
+    title: 'Navigator',
+    image: '/img/gyrolog/navigator.webp',
+    alt: 'Navigator reflection preview showing a possible pattern and next step.',
+    caption: 'A review that moves from a possible pattern toward an agreed next step.',
+  },
+];
+
 const faqs = [
   {
     question: 'Is Gyrolog available now?',
@@ -269,6 +290,30 @@ export default function GyrologPage(): ReactNode {
             <span>Notice your days</span>
             <span className={styles.heroFootRule} />
             <span>Choose your direction</span>
+          </div>
+        </section>
+
+        <section className={styles.screensSection} aria-labelledby="screens-title">
+          <div className={styles.sectionFrame}>
+            <div className={styles.screensIntro}>
+              <span className={styles.sectionEyebrow}>A closer look</span>
+              <Heading as="h2" id="screens-title">Three moments in <span className={styles.accent}>Gyrolog.</span></Heading>
+              <p>Capture what happened, think with your own context, and reflect on what could come next.</p>
+            </div>
+            <div className={styles.screensGrid}>
+              {componentPreviews.map((preview) => (
+                <figure className={styles.screenCard} key={preview.title}>
+                  <div className={styles.screenImageFrame}>
+                    <img src={preview.image} alt={preview.alt} loading="lazy" width="780" height="1688" />
+                  </div>
+                  <figcaption>
+                    <h3>{preview.title}</h3>
+                    <p>{preview.caption}</p>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+            <p className={styles.screenDisclosure}>Interface previews with sample data.</p>
           </div>
         </section>
 

@@ -523,6 +523,94 @@
   color: var(--ink);
 }
 
+.screensSection {
+  padding: clamp(4.5rem, 8vw, 7rem) 24px;
+  background: #202923;
+  color: var(--light);
+}
+
+.screensIntro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.55fr);
+  column-gap: 3rem;
+  align-items: end;
+  margin-bottom: 2.8rem;
+}
+
+.screensIntro .sectionEyebrow {
+  grid-column: 1 / -1;
+  margin-bottom: 1.2rem;
+  color: var(--lime);
+}
+
+.screensIntro h2 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+}
+
+.screensIntro > p {
+  max-width: 380px;
+  margin: 0 0 0.25rem;
+  color: #c0c9bb;
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+.screensGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2.5vw, 2rem);
+  align-items: start;
+}
+
+.screenCard {
+  min-width: 0;
+  margin: 0;
+}
+
+.screenImageFrame {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0.7rem;
+  border: 1px solid rgba(237, 240, 230, 0.18);
+  border-radius: 1.2rem;
+  background: #111713;
+}
+
+.screenImageFrame img {
+  display: block;
+  width: min(100%, 320px);
+  height: auto;
+  border-radius: 0.7rem;
+}
+
+.screenCard figcaption {
+  padding: 1.1rem 0.2rem 0;
+}
+
+.screenCard h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.08rem;
+}
+
+.screenCard figcaption p {
+  max-width: 34ch;
+  margin: 0;
+  color: #b3bdb0;
+  font-size: 0.87rem;
+  line-height: 1.6;
+}
+
+.screenDisclosure {
+  margin: 1.5rem 0 0;
+  color: #8e998b;
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+}
+
 .sectionIntro {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(220px, 0.55fr);
@@ -1095,20 +1183,37 @@
   }
 
   .sectionIntro,
-  .modesIntro {
+  .modesIntro,
+  .screensIntro {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
 
   .sectionIntro .sectionEyebrow,
-  .modesIntro .sectionEyebrow {
+  .modesIntro .sectionEyebrow,
+  .screensIntro .sectionEyebrow {
     grid-column: auto;
   }
 
   .sectionIntro > p,
-  .modesIntro > p {
+  .modesIntro > p,
+  .screensIntro > p {
     max-width: 600px;
     margin-top: 0.5rem;
+  }
+
+  .screensGrid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .screenCard {
+    width: min(100%, 520px);
+    margin-inline: auto;
+  }
+
+  .screenImageFrame img {
+    width: min(100%, 320px);
   }
 
   .loopSteps {
