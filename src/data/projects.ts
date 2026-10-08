@@ -3,7 +3,7 @@ export interface Project {
     description: string;
     tags: string[];
     status: 'Live' | 'Beta' | 'Alpha';
-    price: 'Free' | 'Paid';
+    price?: 'Free' | 'Paid';
     image: string;
     link?: string;
     category?: string;
@@ -13,16 +13,35 @@ export interface Project {
 
 export const PROJECTS: Project[] = [
     {
+        title: 'Gyrolog',
+        description: 'A personal operating system connecting daily experiences, personal memory, and chosen direction through AI-assisted capture and reflection.',
+        tags: ['Personal OS', 'AI', 'Mobile'],
+        status: 'Alpha',
+        image: '/brand/gyrolog-mark.svg',
+        category: 'Mobile',
+        link: '/gyrolog',
+        featured: true,
+        version: 'In development',
+    },
+    {
+        title: 'WickdAlgo',
+        description: 'Reproducible financial market research and testable strategies, grounded in inspectable market structure.',
+        tags: ['Market structure', 'Research', 'Strategy testing'],
+        status: 'Alpha',
+        image: '/brand/wickdalgo-mark.svg',
+        category: 'Research',
+        link: 'mailto:tech@kukso.com?subject=WickdAlgo%20enquiry',
+    },
+    {
         title: 'FirstSpawn',
-        description: 'Advanced server exploration and player retention platform.',
-        tags: ['React', 'TypeScript', 'Next.js', 'C#.NET'],
+        description: 'Minecraft server discovery with community voting and separate trust signals to help players find their next community.',
+        tags: ['Server discovery', 'Community', 'Minecraft'],
         status: 'Alpha',
         price: 'Free',
         image: '/content/logo_firstspawn.png',
         category: 'Web',
         link: 'https://www.firstspawn.com/en?utm_source=kukso&utm_medium=projectcard',
-        featured: true,
-        version: 'Early Access',
+        version: 'In development',
     },
     // {
     //     title: 'Discipline vs Dopamine',

@@ -1,94 +1,70 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
-/**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
- */
-
-/* You can override the default Infima variables here. */
-html {
-  font-size: 90%; /* Reduce base size by 20% for Press Start 2P */
-}
-
+/* Shared studio theme. Legacy project/documentation styles remain below. */
+html { font-size: 100%; scroll-padding-top: 90px; }
 :root {
-  /* Core Brand Colors - Kukso Rebrand */
-  --ifm-color-primary: #7c3aed;
-  /* Deep Electric Purple */
-  --ifm-color-primary-dark: #6d28d9;
-  --ifm-color-primary-darker: #5b21b6;
-  --ifm-color-primary-darkest: #4c1d95;
-  --ifm-color-primary-light: #8b5cf6;
-  /* Vivid Purple (Secondary) */
-  --ifm-color-primary-lighter: #a78bfa;
-  /* Soft Lavender (Accent) */
-  --ifm-color-primary-lightest: #c4b5fd;
+  --ifm-color-primary: #638245;
+  --ifm-color-primary-dark: #59753e;
+  --ifm-color-primary-darker: #546e3b;
+  --ifm-color-primary-darkest: #456030;
+  --ifm-color-primary-light: #6f914e;
+  --ifm-color-primary-lighter: #789b55;
+  --ifm-color-primary-lightest: #8aaa6b;
+  --ifm-font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --ifm-heading-font-family: var(--ifm-font-family-base);
   --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
-  --ifm-font-family-base: 'Press Start 2P', system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, Cantarell, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-
-  /* Kukso Premium Palette - Light */
-  --kukso-bg-base: #faf5ff; /* Very light purple tint */
-  --kukso-bg-subtle: #f3e8ff; /* Light purple tint */
-  --kukso-bg-card: rgba(255, 255, 255, 0.8);
-  --kukso-border: rgba(139, 92, 246, 0.2);
-  --kukso-text-primary: #1e1b4b; /* Deep Indigo for text */
-  --kukso-text-secondary: #5b21b6; /* Dark Purple for secondary text */
-  --kukso-accent: #a78bfa; /* Soft Lavender */
-  --kukso-contrast: #ea580c; /* Warm Pixel Orange */
-
-  /* Gradients */
-  --kukso-gradient-1: linear-gradient(135deg, #7c3aed 0%, #ea580c 100%);
-  /* Electric Purple to Pixel Orange */
-  --kukso-gradient-glow: radial-gradient(circle at center, rgba(124, 58, 237, 0.2) 0%, transparent 70%);
-
-  /* UI Elements */
-  --ifm-navbar-background-color: rgba(250, 245, 255, 0.85);
-  --ifm-footer-background-color: #f3e8ff;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, .1);
+  --kukso-bg-base: #f3f5ed;
+  --kukso-bg-subtle: #e8eddf;
+  --kukso-bg-card: #fff;
+  --kukso-border: #cdd8c3;
+  --kukso-text-primary: #111713;
+  --kukso-text-secondary: #53604f;
+  --kukso-accent: #638245;
+  --kukso-contrast: #916944;
+  --kukso-gradient-1: linear-gradient(135deg, #638245, #916944);
+  --kukso-gradient-glow: radial-gradient(circle at center, rgba(99,130,69,.12), transparent 70%);
+  --ifm-navbar-background-color: #f3f5ed;
+  --ifm-footer-background-color: #e8eddf;
 }
-
-/* Dark Mode - The "Deep Space" Look */
 [data-theme='dark'] {
-  --ifm-color-primary: #8b5cf6;
-  /* Vivid Purple */
-  --ifm-color-primary-dark: #7c3aed;
-  --ifm-color-primary-darker: #6d28d9;
-  --ifm-color-primary-darkest: #5b21b6;
-  --ifm-color-primary-light: #a78bfa;
-  --ifm-color-primary-lighter: #c4b5fd;
-  --ifm-color-primary-lightest: #ddd6fe;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
-
-  /* Kukso Premium Palette - Dark */
-  --ifm-background-color: #0f0b1a;
-  /* Near Black / Dark Violet */
-  --kukso-bg-base: #0f0b1a; 
-  --kukso-bg-subtle: #1a102d;
-  --kukso-bg-card: rgba(26, 16, 45, 0.6);
-  --kukso-border: rgba(139, 92, 246, 0.15);
-  --kukso-text-primary: #f5f3ff;
-  --kukso-text-secondary: #a78bfa;
-  
-  /* UI Elements */
-  --ifm-navbar-background-color: rgba(15, 11, 26, 0.8);
-  --ifm-footer-background-color: #1a102d;
+  --ifm-color-primary: #c3d99e;
+  --ifm-color-primary-dark: #b5cf8a;
+  --ifm-color-primary-darker: #adc97d;
+  --ifm-color-primary-darkest: #98bb5e;
+  --ifm-color-primary-light: #d0e2b5;
+  --ifm-color-primary-lighter: #dbe9c7;
+  --ifm-color-primary-lightest: #edf3e4;
+  --ifm-background-color: #111713;
+  --ifm-background-surface-color: #1b241d;
+  --ifm-font-color-base: #edf0e6;
+  --ifm-heading-color: #edf0e6;
+  --ifm-color-emphasis-600: #abb6a6;
+  --ifm-color-emphasis-700: #c9d2c3;
+  --ifm-navbar-background-color: #111713;
+  --ifm-footer-background-color: #111713;
+  --kukso-bg-base: #111713;
+  --kukso-bg-subtle: #1b241d;
+  --kukso-bg-card: #1b241d;
+  --kukso-border: #334031;
+  --kukso-text-primary: #edf0e6;
+  --kukso-text-secondary: #abb6a6;
+  --kukso-accent: #c3d99e;
+  --docusaurus-highlighted-code-line-bg: rgba(0,0,0,.3);
 }
-
-/* Global Styles */
-body {
-  font-family: 'Press Start 2P', 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: var(--kukso-bg-base);
-  transition: background-color 0.3s ease, color 0.3s ease;
-  overflow-x: hidden;
-  /* Prevent scrollbar from animation overflow */
+body { font-family: var(--ifm-font-family-base); background-color: var(--kukso-bg-base); }
+:focus-visible { outline: 2px solid var(--ifm-color-primary); outline-offset: 4px; }
+section[id] { scroll-margin-top: 85px; }
+.navbar { border-bottom: 1px solid var(--kukso-border); box-shadow: none; height: 76px; }
+.navbar__inner { max-width: 1240px; margin: 0 auto; }
+.navbar__title { font-size: 1rem; font-weight: 500; letter-spacing: -.035em; }
+.navbar__link { font-size: .85rem; font-weight: 400; }
+.navbar__items--right .navbar__link { border: 1px solid var(--kukso-border); border-radius: 6px; padding: 9px 15px; }
+.footer { border-top: 1px solid var(--kukso-border); padding: 45px 24px 25px; }
+.footer__title { color: #edf0e6; font-size: .8rem; font-weight: 500; }
+.footer__link-item { color: #abb6a6; font-size: .85rem; line-height: 2.1; }
+.footer__copyright { color: #abb6a6; font-size: .75rem; margin-top: 30px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
 }
-
-/* Navbar Glassmorphism 
-.navbar {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--kukso-border);
-}*/
 
 /* Navbar Dropdown Fixes for Mobile */
 .navbar__item.dropdown .navbar__link:after {
@@ -897,7 +873,7 @@ footer {
 
 /* Navbar Logo Adjustment */
 .navbar__logo {
-  height: 2.8rem; /* Increased size */
+  height: 2rem;
 }
 
 /* Featured Project in Header Adjustment */
