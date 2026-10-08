@@ -16,27 +16,35 @@ const previewModes: Array<{
   input: string;
   outputLabel: string;
   output: string;
+  entries?: Array<{ label: string; text: string }>;
+  goalIntent?: string;
   note: string;
 }> = [
   {
     id: 'capture',
     name: 'Voice Dump',
     number: '01',
-    inputLabel: 'A moment, in your words',
-    input: '“I studied for 25 minutes after dinner. Starting with one lesson made it easier to begin.”',
-    outputLabel: 'A draft to review',
-    output: 'Studied for 25 minutes after dinner. Starting with one lesson made it easier to begin.',
-    note: 'Diary draft · review the wording before saving',
+    inputLabel: 'One dump, in your words',
+    input: '“I studied for 25 minutes after dinner. Starting with one lesson made it easier to begin. I also went for a 20-minute walk. Tomorrow I need to book a dentist appointment.”',
+    outputLabel: 'Three entries to review',
+    output: 'Two Diary entries in different domains, plus one item for your to-do list.',
+    entries: [
+      { label: 'Diary entry · Learning', text: 'Studied for 25 minutes after dinner. Starting with one lesson made it easier to begin.' },
+      { label: 'Diary entry · Health', text: 'Went for a 20-minute walk.' },
+      { label: 'To-do list entry', text: 'Book a dentist appointment tomorrow.' },
+    ],
+    note: 'Suggested entries · review, edit, or discard before saving',
   },
   {
     id: 'pilot',
     name: 'Pilot',
     number: '02',
     inputLabel: 'A question to think through',
-    input: '“What helped me make time for learning this week?”',
-    outputLabel: 'An answer grounded in your records',
-    output: 'Your Monday and Thursday notes both mention starting with one lesson after dinner. A small starting point may have helped. Did it feel that way to you?',
-    note: 'Example sources: Monday’s Diary + Thursday’s Diary · interpretation, not a verdict',
+    input: '“I want to keep learning, but my evenings are busy. What could I aim for?”',
+    outputLabel: 'A direction grounded in your records',
+    output: 'Your Monday and Thursday notes mention starting with one lesson after dinner. Short sessions may be a useful starting point for a goal. Would this intent fit what you want?',
+    goalIntent: 'Make steady progress in my course with short study sessions after dinner.',
+    note: 'Example sources: Monday’s Diary + Thursday’s Diary · review the intent before creating a goal',
   },
   {
     id: 'navigator',
@@ -186,6 +194,23 @@ function ProductPreview(): ReactNode {
               <span className={styles.reviewMark} aria-hidden="true">↗</span>
             </div>
             <p>{activeExample.output}</p>
+            {activeExample.entries && (
+              <ul className={styles.previewEntries}>
+                {activeExample.entries.map((entry) => (
+                  <li className={styles.previewEntry} key={entry.label}>
+                    <span className={styles.previewLabel}>{entry.label}</span>
+                    <p>{entry.text}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {activeExample.goalIntent && (
+              <div className={styles.previewGoalIntent}>
+                <span className={styles.previewLabel}>Suggested goal intent</span>
+                <p>{activeExample.goalIntent}</p>
+                <span className={styles.previewNote}>A proposal to refine together · nothing is created automatically</span>
+              </div>
+            )}
             <span className={styles.previewNote}>{activeExample.note}</span>
           </div>
         </div>

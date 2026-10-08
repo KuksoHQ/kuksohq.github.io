@@ -462,6 +462,33 @@
   letter-spacing: 0.025em;
 }
 
+.previewEntries {
+  display: grid;
+  gap: 0.65rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.previewEntry,
+.previewGoalIntent {
+  min-width: 0;
+  padding: 0.8rem;
+  border: 1px solid var(--line-dark);
+  border-radius: 4px;
+  background: var(--paper-raised);
+}
+
+.previewEntry .previewLabel,
+.previewGoalIntent .previewLabel {
+  color: #45533f;
+}
+
+.previewGoalIntent {
+  margin-top: 1rem;
+  border-left: 3px solid #789755;
+}
+
 .previewDisclosure {
   margin: 0.95rem 0 0;
   color: var(--muted-dark);
