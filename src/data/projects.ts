@@ -14,12 +14,12 @@ export interface Project {
 export const PROJECTS: Project[] = [
     {
         title: 'Gyrolog',
-        description: 'A personal operating system connecting daily experiences, personal memory, and chosen direction through AI-assisted capture and reflection.',
+        description: 'A private iPhone Preview for Diary capture and review, Pilot conversations, and Navigator sessions.',
         tags: ['Personal OS', 'AI', 'Mobile'],
         status: 'Alpha',
         image: '/brand/gyrolog-mark.svg',
         category: 'Mobile',
-        link: '/gyrolog',
+        link: 'https://gyrolog.app',
         featured: true,
         version: 'In development',
     },

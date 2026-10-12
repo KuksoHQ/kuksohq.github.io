@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
-  <title>Gyrolog</title>
-  <rect width="128" height="128" rx="24" fill="#1b241d"/>
-  <circle cx="64" cy="64" r="49" stroke="#C3D99E" stroke-opacity=".28" stroke-width="1.5"/>
-  <ellipse cx="64" cy="64" rx="24" ry="48" transform="rotate(34 64 64)" stroke="#EDF0E6" stroke-width="2"/>
-  <ellipse cx="64" cy="64" rx="24" ry="48" transform="rotate(-34 64 64)" stroke="#C3D99E" stroke-opacity=".72" stroke-width="2"/>
-  <circle cx="64" cy="64" r="8" fill="#C3D99E"/>
-  <path d="M64 25v27m0 24v27M25 64h27m24 0h27" stroke="#EDF0E6" stroke-opacity=".76" stroke-width="1.5" stroke-linecap="round"/>
-  <circle cx="64" cy="16" r="3" fill="#C3D99E"/>
-  <circle cx="112" cy="64" r="2.5" fill="#EDF0E6" fill-opacity=".8"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 112" role="img" aria-labelledby="title" style="color:#D3F413"><title id="title">Gyrolog Open Dial G</title><path d="M 84.343644 32.216858 C 77.09545 23.578796 66.303778 18.717503 55.031453 19.012679 C 43.759128 19.307855 33.236666 24.727279 26.450486 33.732844" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><path d="M 19.455531 50.211925 C 17.27899 63.954066 22.995737 77.755515 34.251946 85.933629 C 45.508154 94.111743 60.400684 95.283811 72.797648 88.967241 C 85.194613 82.650672 93.0 69.913439 93.0 56.0" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><path d="M 56 56 L 93 56" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>
