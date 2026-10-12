@@ -17,7 +17,6 @@ const previewModes: Array<{
   outputLabel: string;
   output: string;
   entries?: Array<{ label: string; text: string }>;
-  goalIntent?: string;
   stage: string;
   note: string;
 }> = [
@@ -26,15 +25,14 @@ const previewModes: Array<{
     name: 'Voice Dump',
     number: '01',
     inputLabel: 'One dump, in your words',
-    input: '“I studied for 25 minutes after dinner. Starting with one lesson made it easier to begin. I also went for a 20-minute walk. Tomorrow I need to book a dentist appointment.”',
-    outputLabel: 'Three entries to review',
-    output: 'Two Diary entries in different domains, plus one item for your to-do list.',
+    input: '“I studied for 25 minutes after dinner. Starting with one lesson made it easier to begin. I also went for a 20-minute walk.”',
+    outputLabel: 'Two entries to review',
+    output: 'One spoken capture becomes separate Diary entries for you to review before saving.',
     entries: [
       { label: 'Diary entry · Learning', text: 'Studied for 25 minutes after dinner. Starting with one lesson made it easier to begin.' },
       { label: 'Diary entry · Health', text: 'Went for a 20-minute walk.' },
-      { label: 'To-do list entry', text: 'Book a dentist appointment tomorrow.' },
     ],
-    stage: 'Diary draft review is in the prototype; to-do entries are planned.',
+    stage: 'Capture, review, and save are available in the private iPhone Preview.',
     note: 'Suggested entries · review, edit, or discard before saving',
   },
   {
@@ -45,9 +43,8 @@ const previewModes: Array<{
     input: '“I want to keep learning, but my evenings are busy. What could I aim for?”',
     outputLabel: 'A direction grounded in your records',
     output: 'Your Monday and Thursday notes mention starting with one lesson after dinner. Short sessions may be a useful starting point for a goal. Would this intent fit what you want?',
-    goalIntent: 'Make steady progress in my course with short study sessions after dinner.',
-    stage: 'Conversation UI is in the prototype; goal-intent proposals are planned.',
-    note: 'Example sources: Monday’s Diary + Thursday’s Diary · review the intent before creating a goal',
+    stage: 'Pilot conversations are available in the private iPhone Preview.',
+    note: 'Illustrative example · challenge the response before choosing a next step',
   },
   {
     id: 'navigator',
@@ -58,8 +55,8 @@ const previewModes: Array<{
     outputLabel: 'Drift → Pattern → Plan',
     output:
       'Drift: the longer session did not happen. Possible pattern: smaller starts fit your evenings better. Proposed plan: try one short lesson after dinner, then review how it went.',
-    stage: 'Illustrative reflection flow; richer reviews and weekly carryover are in development.',
-    note: 'Challenge the reading · agree on a plan before carrying it forward',
+    stage: 'Navigator sessions are available in the private iPhone Preview.',
+    note: 'Illustrative example · review the Drift, Pattern, and Plan with your own judgment',
   },
 ];
 
@@ -91,32 +88,11 @@ const loopSteps = [
   },
 ];
 
-const componentPreviews = [
-  {
-    title: 'Voice Dump',
-    image: '/img/gyrolog/capture.webp',
-    alt: 'Voice Dump review screen with two diary drafts assigned to different domains.',
-    caption: 'One spoken thought, shaped into separate diary drafts for review.',
-  },
-  {
-    title: 'Pilot',
-    image: '/img/gyrolog/pilot.webp',
-    alt: 'Pilot conversation preview with a question and a contextual assistant response.',
-    caption: 'A thought partner that connects a question to relevant personal context.',
-  },
-  {
-    title: 'Navigator',
-    image: '/img/gyrolog/navigator.webp',
-    alt: 'Navigator reflection preview showing a possible pattern and next step.',
-    caption: 'A review that moves from a possible pattern toward an agreed next step.',
-  },
-];
-
 const faqs = [
   {
     question: 'Is Gyrolog available now?',
     answer:
-      'Gyrolog is a private mobile prototype with five early testers. It is not publicly launched. Diary capture, draft review, and conversational interfaces are part of the prototype; the fuller reflection loop is still being developed.',
+      'Gyrolog 0.13.0 is a private iPhone Preview that its maintainer has tested. It includes Diary capture and review, Pilot conversations, and Navigator sessions. Gyrolog is not publicly available, and there is no public sign-up.',
   },
   {
     question: 'Does Gyrolog decide what I should do?',
@@ -126,7 +102,7 @@ const faqs = [
   {
     question: 'How is this different from keeping notes?',
     answer:
-      'Notes preserve a moment. Gyrolog is being built to connect those moments with personal memory, chosen direction, and reflection, so useful context carries forward.',
+      'The private Preview brings Diary records together with Pilot conversations and Navigator sessions. The broader product direction is to connect what happened with personal memory, chosen direction, and reflection.',
   },
   {
     question: 'Who is Gyrolog being built for?',
@@ -136,17 +112,17 @@ const faqs = [
   {
     question: 'Where does Claude fit?',
     answer:
-      'We use Claude in our development workflow. Product integration is planned: spoken or typed captures would become structured drafts; questions and relevant, user-permitted records would inform Pilot replies; weekly records and chosen goals would inform Navigator reflections. We also plan a product support assistant. Users would review drafts and interpretations before saving or acting on them.',
+      'Claude is part of our development workflow. Product integration remains planned and is not included in the current Preview.',
   },
   {
     question: 'How will my information be handled?',
     answer:
-      'Privacy and user control are part of the product’s design. We will publish clear data practices before a public release.',
+      'Diary notes are stored on this iPhone and may be included in iPhone Backup. Coaching & voice processing is off until you opt in; Gyrolog sends information when you ask Pilot or Coach a question, or ask it to split a voice capture. A random install ID, token counts, and estimated cost are kept for up to 62 days to support allowance and cost displays. AI providers process requests and may use prompt caching. Turning processing off stops future requests; it cannot recall information already sent.',
   },
   {
     question: 'What if AI or the network is unavailable?',
     answer:
-      'The product direction is local-first usefulness: existing personal records should remain readable and useful when AI or the network is unavailable. This is a design goal, not a promise that every capability works offline; public-release details will explain the boundaries.',
+      'Saved Diary records remain on the iPhone. Pilot and voice processing need a network and an enabled Coaching & voice processing setting, so those requests are unavailable while either is off.',
   },
 ];
 
@@ -157,9 +133,9 @@ const personalContext = [
 ];
 
 const useCases = [
-  { title: 'Working toward a weight goal', role: 'Everyday routines', text: 'Record a walk, an evening routine, or what made a planned activity difficult. A future Navigator review could help you reflect on those records and choose a manageable adjustment.' },
+  { title: 'Working toward a weight goal', role: 'Everyday routines', text: 'Record a walk, an evening routine, or what made a planned activity difficult. In a Navigator session, reflect on those records and choose a manageable adjustment.' },
   { title: 'Making time to build strength', role: 'Training alongside daily life', text: 'Keep notes on completed and missed workouts alongside work and other commitments. The intended reflection loop connects your chosen direction with what actually fit your week.' },
-  { title: 'Returning to unfinished projects', role: 'Work and personal projects', text: 'Capture where a project stalled and what helped you restart. Pilot is being built to bring that context into a conversation about the next small step.' },
+  { title: 'Returning to unfinished projects', role: 'Work and personal projects', text: 'Capture where a project stalled and what helped you restart. Use Pilot to think through the relevant context and a possible next step.' },
 ];
 
 const reviewEvidence = [
@@ -185,18 +161,18 @@ function ProductPreview(): ReactNode {
         <span />
         <span />
       </div>
-      <section className={styles.previewCard} aria-label="Illustrative Gyrolog interface preview">
+      <section className={styles.previewCard} aria-label="Illustrative Gyrolog private Preview example">
         <div className={styles.previewTopline}>
           <span className={styles.previewBrand}>
             <img src="/brand/gyrolog-mark.svg" alt="" width="26" height="26" />
             <span>gyrolog</span>
           </span>
-          <span className={styles.previewState}>Product direction</span>
+          <span className={styles.previewState}>Private Preview · example data</span>
         </div>
 
         <div className={styles.previewHeading}>
           <div>
-            <span className={styles.previewKicker}>A personal operating system</span>
+            <span className={styles.previewKicker}>Log your life. Find your balance.</span>
             <h2>Make room to see the whole picture.</h2>
           </div>
           <span className={styles.previewIndex}>{activeExample.number} / 03</span>
@@ -241,19 +217,12 @@ function ProductPreview(): ReactNode {
                 ))}
               </ul>
             )}
-            {activeExample.goalIntent && (
-              <div className={styles.previewGoalIntent}>
-                <span className={styles.previewLabel}>Suggested goal intent</span>
-                <p>{activeExample.goalIntent}</p>
-                <span className={styles.previewNote}>A proposal to refine together · nothing is created automatically</span>
-              </div>
-            )}
             <span className={styles.previewNote}>{activeExample.note}</span>
           </div>
         </div>
 
         <p className={styles.previewDisclosure}>
-          Illustrative concept with sample data · includes planned features
+          Illustrative example with fictional sample data · not an app screenshot
         </p>
       </section>
     </div>
@@ -263,8 +232,8 @@ function ProductPreview(): ReactNode {
 export default function GyrologPage(): ReactNode {
   return (
     <Layout
-      title="Gyrolog — Personal Operating System"
-      description="Gyrolog by Kukso Studios connects scattered daily notes with goals and reflection for people balancing learning, work, and personal projects. Private prototype with five early testers."
+      title="Gyrolog — Log your life. Find your balance."
+      description="Gyrolog 0.13.0 is a private iPhone Preview for Diary capture and review, Pilot conversations, and Navigator sessions. It is not publicly available."
     >
       <Head>
         <meta property="og:image" content="https://kukso.com/meta/gyrolog-social.png" />
@@ -276,20 +245,20 @@ export default function GyrologPage(): ReactNode {
             <div className={styles.heroCopy}>
               <div className={styles.eyebrow}>
                 <span className={styles.eyebrowMark} aria-hidden="true" />
-                <span>Kukso Studios <span className={styles.eyebrowSlash}>/</span> Personal Operating System</span>
+                <span>Kukso Studios <span className={styles.eyebrowSlash}>/</span> Gyrolog</span>
               </div>
               <h1 className={styles.heroTitle}>
-                Stay on <span className={styles.accent}>course.</span>
+                Log your life.{' '}<span className={styles.accent}>Find your balance.</span>
               </h1>
               <p className={styles.heroLead}>
-                An AI-assisted personal operating system for people balancing learning, work, and personal projects.
+                Gyrolog helps you record what happened, keep useful context close, and find a next step that fits your life.
               </p>
               <p className={styles.heroBody}>
-                Your notes, goals, and memories of the week can end up scattered across tools. Gyrolog is being built to connect them: capture what happened, review it alongside your intentions, and choose a practical next step grounded in your own records.
+                Capture a thought, review the Diary entries it proposes, and save only what you choose. Pilot and Navigator help you think with your records while leaving decisions in your hands.
               </p>
               <div className={styles.heroActions}>
-                <a className={styles.primaryAction} href="mailto:tech@kukso.com?subject=Gyrolog%20early%20access%20or%20demo">
-                  Ask about a preview <span aria-hidden="true">↗</span>
+                <a className={styles.primaryAction} href="https://gyrolog.app">
+                  Visit gyrolog.app <span aria-hidden="true">↗</span>
                 </a>
                 <Link className={styles.secondaryAction} to="#how-it-works">
                   See how it works <span aria-hidden="true">↓</span>
@@ -297,66 +266,42 @@ export default function GyrologPage(): ReactNode {
               </div>
               <p className={styles.statusLine}>
                 <span className={styles.statusDot} aria-hidden="true" />
-                Private prototype · 5 early testers · not publicly launched
+                Private iPhone Preview · v0.13.0 · not publicly available
               </p>
             </div>
             <ProductPreview />
           </div>
           <div className={styles.heroFoot} aria-hidden="true">
-            <span>Notice your days</span>
+            <span>Log what happened</span>
             <span className={styles.heroFootRule} />
-            <span>Choose your direction</span>
+            <span>Find your balance</span>
           </div>
         </section>
 
         <section className={styles.stageSection} aria-labelledby="development-stage">
           <div className={styles.sectionFrame}>
             <div className={styles.modesIntro}>
-              <span className={styles.sectionEyebrow}>A work in progress by Kukso Studios</span>
-              <Heading as="h2" id="development-stage">What exists today.<br /><span className={styles.accent}>What we’re building next.</span></Heading>
-              <p>Gyrolog is a private mobile prototype with five early testers. We are developing the product before a public launch.</p>
+              <span className={styles.sectionEyebrow}>Gyrolog 0.13.0 · private iPhone Preview</span>
+              <Heading as="h2" id="development-stage">What works today.<br /><span className={styles.accent}>What stays yours.</span></Heading>
+              <p>The current Preview has been tested on its maintainer’s iPhone. Diary capture and review, Pilot, and Navigator flows are available; Gyrolog is not publicly available.</p>
             </div>
             <div className={styles.contextCards}>
               <article className={styles.contextCard}>
-                <span className={styles.contextRole}>Current prototype</span>
+                <span className={styles.contextRole}>Capture &amp; Propose</span>
                 <h3>Capture and review</h3>
-                <p>Diary capture, draft review, and conversational interfaces form the starting point. The previews below show individual interface components with sample data.</p>
+                <p>Turn a voice or typed capture into proposed Diary entries. Review, edit, save, or discard before anything is added to your records.</p>
               </article>
               <article className={styles.contextCard}>
-                <span className={styles.contextRole}>Next capabilities</span>
-                <h3>A fuller personal loop</h3>
-                <p>To-do entries from Voice Dump, goal-intent proposals in Pilot, and richer Navigator reviews with context carried into the next week are planned or in development.</p>
+                <span className={styles.contextRole}>Pilot</span>
+                <h3>Think it through</h3>
+                <p>Ask a question and continue a conversation. When you opt in to processing, requests can use the relevant context permitted by your settings.</p>
               </article>
               <article className={styles.contextCard}>
-                <span className={styles.contextRole}>Claude integration · planned</span>
-                <h3>From records to reflection</h3>
-                <p>We use Claude in development. Next, we plan to integrate it into capture parsing, replies using permitted context, weekly reflection, and product support. Drafts and interpretations stay subject to user review.</p>
+                <span className={styles.contextRole}>Navigator</span>
+                <h3>Reflect and adjust</h3>
+                <p>Review a session through Drift, Pattern, and Plan. The reading stays open to challenge, and the next step remains yours to choose.</p>
               </article>
             </div>
-          </div>
-        </section>
-
-        <section className={styles.screensSection} aria-labelledby="screens-title">
-          <div className={styles.sectionFrame}>
-            <div className={styles.screensIntro}>
-              <span className={styles.sectionEyebrow}>A closer look</span>
-              <Heading as="h2" id="screens-title">Three moments in <span className={styles.accent}>Gyrolog.</span></Heading>
-              <p>Capture what happened, think with your own context, and reflect on what could come next.</p>
-            </div>
-            <div className={styles.screensGrid}>
-              {componentPreviews.map((preview) => (
-                <figure className={styles.screenCard} key={preview.title}>
-                  <div className={styles.screenImageFrame}>
-                    <img src={preview.image} alt={preview.alt} loading="lazy" width="780" height="1688" />
-                  </div>
-                  <figcaption>
-                    <h3>{preview.title}</h3>
-                    <p>{preview.caption}</p>
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
-            <p className={styles.screenDisclosure}>Previews of our shared interface components with sample data, rather than screenshots of complete app screens. Navigator illustrates a reflection component; the full review flow is still in development.</p>
           </div>
         </section>
 
@@ -387,9 +332,9 @@ export default function GyrologPage(): ReactNode {
         <section className={styles.contextSection} aria-labelledby="personal-context">
           <div className={styles.sectionFrame}>
             <div className={styles.modesIntro}>
-              <span className={styles.sectionEyebrow}>The system beneath the conversation</span>
+              <span className={styles.sectionEyebrow}>The product direction beneath the conversation</span>
               <Heading as="h2" id="personal-context">Your life has context.<br /><span className={styles.accent}>Keep it connected.</span></Heading>
-              <p>Gyrolog’s personal operating system brings together three foundations. AI helps organize and reason over them; the useful history belongs in your records, beyond any one conversation.</p>
+              <p>Gyrolog’s product direction brings together three foundations. These describe the system being built, rather than a claim that every capability is available in the current Preview. Useful history belongs in your records, beyond any one conversation.</p>
             </div>
             <div className={styles.contextCards}>
               {personalContext.map((item) => (
@@ -410,26 +355,26 @@ export default function GyrologPage(): ReactNode {
               <span className={styles.sectionEyebrow}>Three ways to work with your life</span>
               <h2>Capture the moment.<br /><span className={styles.accent}>Find your bearings.</span></h2>
               <p>
-                AI belongs in the background of a life that is yours. These three modes are being built to help you capture, think, and reflect without taking the decisions out of your hands.
+                The private Preview brings capture, Pilot conversations, and Navigator sessions together. AI suggestions remain reviewable; you decide what to keep and what to do next.
               </p>
             </div>
             <div className={styles.modeCards}>
               <article className={styles.modeCard}>
                 <span className={styles.modeNumber}>01 <span>Capture</span></span>
                 <h3>Voice Dump</h3>
-                <p>Speak or type an unpolished thought. Gyrolog can shape it into a draft for you to review, edit, or leave behind.</p>
+                <p>Speak or type an unpolished thought, then review the proposed Diary entries before saving or discarding them.</p>
                 <span className={styles.modeFoot}>Your words, still yours</span>
               </article>
               <article className={styles.modeCard}>
                 <span className={styles.modeNumber}>02 <span>Assistant</span></span>
                 <h3>Pilot</h3>
-                <p>Ask an open-ended question. Pilot is being built to retrieve the relevant context you permit, so answers connect to your own records and keep evidence distinct from interpretation.</p>
+                <p>Ask an open-ended question and continue the conversation. With processing enabled, Pilot can use relevant context permitted by your settings.</p>
                 <span className={styles.modeFoot}>A thought partner, on your terms</span>
               </article>
               <article className={styles.modeCard}>
                 <span className={styles.modeNumber}>03 <span>Coaching</span></span>
                 <h3>Navigator</h3>
-                <p>Review a meaningful period through Drift, Pattern, and Plan. Compare intention with reality, challenge a possible pattern, then agree on the adjustment worth carrying forward.</p>
+                <p>Review a meaningful period through Drift, Pattern, and Plan. Compare intention with reality, challenge a possible pattern, and choose an adjustment worth carrying forward.</p>
                 <span className={styles.modeFoot}>Discovery without judgment</span>
               </article>
             </div>
@@ -551,11 +496,11 @@ export default function GyrologPage(): ReactNode {
         <section className={styles.contactSection}>
           <div className={styles.contactFrame}>
             <img src="/brand/gyrolog-mark.svg" alt="" width="50" height="50" />
-            <span className={styles.sectionEyebrow}>A work in progress by Kukso Studios</span>
-            <h2>Make a little more sense of <span className={styles.accent}>the whole.</span></h2>
-            <p>Gyrolog is taking shape. If you would like to see a demo or hear about early access, write to us.</p>
-            <a className={styles.primaryAction} href="mailto:tech@kukso.com?subject=Gyrolog%20early%20access%20or%20demo">
-              Get in touch <span aria-hidden="true">↗</span>
+            <span className={styles.sectionEyebrow}>Gyrolog — Log your life. Find your balance.</span>
+            <h2>Find your balance, one honest log at a time.</h2>
+            <p>Gyrolog is a private iPhone Preview and is not publicly available. Visit the Gyrolog site for current information.</p>
+            <a className={styles.primaryAction} href="https://gyrolog.app">
+              Visit gyrolog.app <span aria-hidden="true">↗</span>
             </a>
             <span className={styles.contactAddress}>tech@kukso.com</span>
           </div>

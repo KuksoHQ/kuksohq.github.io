@@ -13,23 +13,24 @@ Preview the production build with `npm run serve -- --port 4173`.
 ## Studio and product pages
 
 - `/` introduces Kukso Studios and its current portfolio.
-- `/gyrolog` presents Gyrolog, its product loop, and Voice Dump, Pilot, and Navigator.
-  It also explains Diary, Collections, Goals, and an evidence-led weekly review.
-  Its interactive examples are illustrative concepts, not app screenshots.
+- `/gyrolog` presents the private iPhone Preview, its product loop, and Voice Dump,
+  Pilot, and Navigator. Its interactive examples use fictional data rather than app
+  screenshots, and the page links to [gyrolog.app](https://gyrolog.app).
 - `/projects` lists the portfolio with category filters and search. Project data,
   links, and release status live in `src/data/projects.ts`.
 - Existing documentation, API reference destinations, and legal pages remain available.
 
-The product pages use real email contact links rather than an unconnected signup
-form. Keep availability, pricing, and integration claims aligned with the product's
+The Gyrolog page links to the product site instead of offering a signup form.
+Keep availability, pricing, and integration claims aligned with the product's
 actual state when updating the copy.
 
 Gyrolog's narrative and typography follow the canonical `PRODUCT.md` and
-`DESIGN.md` in the Keel monorepo. These describe long-term direction, not a
+`DESIGN.md` in the Gyrolog repository. These describe long-term direction, not a
 guarantee that every feature ships today. Instrument Sans is served locally from
 `static/fonts/instrument-sans/`; its SIL Open Font License is included in `OFL.txt`.
 
 Social share images are committed in `static/meta/`. To regenerate them, run
-`python3 scripts/generate-social-cards.py` with Pillow installed. The script uses
-macOS system fonts by default; set `STUDIO_SANS_FONT` and `STUDIO_SERIF_FONT` to
-local font paths on other systems. Normal website builds do not need Python.
+`python3 scripts/generate-social-cards.py` with Pillow and Swift on macOS. The
+Gyrolog card uses the approved SVG mark and bundled Instrument Sans fonts; the
+Kukso Studios card keeps its system-font defaults. Normal website builds do not
+need Python or Swift.

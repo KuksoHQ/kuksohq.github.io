@@ -59,9 +59,9 @@ function FeaturedProject({ project }: { project: Project }) {
                     {project.category && <span className={styles.category}>{project.category}</span>}
                     <span className={styles.status}>{projectStatus(project.status)}</span>
                 </div>
-                <h2 id="featured-title">{project.title}<span className={styles.italic}> for the whole you.</span></h2>
+                <h2 id="featured-title">{project.title}<span className={styles.italic}> — Log your life. Find your balance.</span></h2>
                 <p className={styles.featuredDescription}>{project.description}</p>
-                <Link className={styles.primaryAction} to="/gyrolog">Discover Gyrolog <span aria-hidden="true">↗</span></Link>
+                <Link className={styles.primaryAction} to={project.link ?? '/gyrolog'}>Visit Gyrolog <span aria-hidden="true">↗</span></Link>
             </div>
             <div className={styles.featuredArtwork}>
                 <img src={project.image} alt="" />
