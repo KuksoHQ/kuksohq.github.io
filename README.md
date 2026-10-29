@@ -12,6 +12,13 @@ Preview the production build with `npm run serve -- --port 4173`.
 
 ## Studio and product pages
 
+The Kukso K mark lives in `static/brand/studio-mark.svg`; the accepted Imagegen
+concept is retained in `design/brand/kukso-k-reference.png`. The flat SVG follows
+that silhouette for small-screen use. `favicon.svg` adds a dark background, with
+a multi-resolution ICO fallback and a 180px Apple touch icon. The legacy
+`logo.svg`, `logo.png`, `logo_k.png`, and `logo_circle_frame.png` paths carry the
+same mark; `studio-icon.png` is the 512px square icon export.
+
 - `/` introduces Kukso Studios and its current portfolio.
 - `/gyrolog` presents the private iPhone Preview, its product loop, and Voice Dump,
   Pilot, and Navigator. Its interactive examples use fictional data rather than app

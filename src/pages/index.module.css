@@ -21,7 +21,7 @@
 .orbits span { position: absolute; width: 160px; height: 108px; border: 1px solid #586548; border-radius: 50%; transform: rotate(-35deg); }
 .orbits span:nth-child(2) { transform: rotate(35deg); }
 .orbits span:nth-child(3) { width: 115px; height: 150px; transform: rotate(0deg); }
-.orbits b { color: #c3d99e; font-size: 3rem; font-weight: 500; letter-spacing: -.12em; padding-right: 6px; }
+.orbits img { position: relative; width: 64px; height: 64px; }
 .heroFoot { display: flex; justify-content: space-between; gap: 20px; padding: 22px 0; border-top: 1px solid #334031; border-bottom: 1px solid #334031; color: #abb6a6; letter-spacing: 0; }
 .products, .approach { padding-top: 95px; }
 .sectionHeading { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 38px; }

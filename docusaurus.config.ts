@@ -7,7 +7,11 @@ import { join } from 'node:path';
 const config: Config = {
   title: 'Kukso Studios',
   tagline: 'Independent products. Thoughtfully built.',
-  favicon: 'brand/favicon.ico',
+  favicon: 'brand/favicon.svg',
+  headTags: [
+    { tagName: 'link', attributes: { rel: 'alternate icon', href: '/brand/favicon.ico?v=20261029' } },
+    { tagName: 'link', attributes: { rel: 'apple-touch-icon', sizes: '180x180', href: '/brand/apple-touch-icon.png' } },
+  ],
   future: { v4: true },
   url: 'https://kukso.com',
   baseUrl: '/',
@@ -54,7 +58,7 @@ const config: Config = {
     image: 'meta/studio-social.png',
     navbar: {
       title: 'Kukso Studios',
-      logo: { alt: 'Kukso Studios', src: 'brand/studio-mark.svg', width: 32, height: 32 },
+      logo: { alt: 'Kukso Studios', src: 'brand/studio-mark.svg?v=20261029', width: 32, height: 32 },
       items: [
         { to: '/', label: 'Studio', position: 'left', activeBaseRegex: '^/$' },
         { to: '/gyrolog', label: 'Gyrolog', position: 'left' },

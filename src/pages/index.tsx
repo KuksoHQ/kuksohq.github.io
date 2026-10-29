@@ -26,7 +26,7 @@ export default function Home(): ReactNode {
               </div>
             </div>
             <div className={styles.studioNote}>
-              <div className={styles.orbits} aria-hidden="true"><span /><span /><span /><b>k.</b></div>
+              <div className={styles.orbits} aria-hidden="true"><span /><span /><span /><img src="/brand/studio-mark.svg?v=20261029" alt="" width="64" height="64" /></div>
               <p>Independent studio.<br />Current focus: Gyrolog.</p>
               <span className={styles.caption}>Building in the open, one useful product at a time.</span>
             </div>
