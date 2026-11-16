@@ -20,9 +20,13 @@ a multi-resolution ICO fallback and a 180px Apple touch icon. The legacy
 same mark; `studio-icon.png` is the 512px square icon export.
 
 - `/` introduces Kukso Studios and its current portfolio.
-- `/gyrolog` presents the private iPhone Preview, its product loop, and Voice Dump,
-  Pilot, and Navigator. Its interactive examples use fictional data rather than app
-  screenshots, and the page links to [gyrolog.app](https://gyrolog.app).
+- `/gyrolog` presents the private iPhone Preview, its product loop, Capture, This
+  week, and the Weekly review. It is drawn with the Gyrolog app's own dark theme,
+  type scale, radii and components, copied from `packages/ui` in the Gyrolog
+  repository; update the token block at the top of `gyrolog.module.css` from
+  there rather than editing values in place. The This week screen and the review
+  cards are drawings with fictional sample data, not app screenshots, and the
+  page links to [gyrolog.app](https://gyrolog.app).
 - `/projects` lists the portfolio with category filters and search. Project data,
   links, and release status live in `src/data/projects.ts`.
 - Existing documentation, API reference destinations, and legal pages remain available.

@@ -42,7 +42,7 @@ export default function Home(): ReactNode {
               <span className={styles.kicker}>Personal Operating System</span>
               <h3>Connect your days<br />with your direction.</h3>
               <p>Gyrolog is being built for people balancing learning, work, and personal projects. It brings scattered thoughts and daily experiences into personal context for weekly reflection and a practical next step.</p>
-              <div className={styles.featureNames}><span>Voice Dump</span><span>Pilot</span><span>Navigator</span></div>
+              <div className={styles.featureNames}><span>Capture</span><span>This week</span><span>Weekly review</span></div>
               <Link className={styles.darkButton} to="/gyrolog">Explore Gyrolog <span aria-hidden="true">↗</span></Link>
             </div>
             <div className={styles.loopIllustration} aria-label="Gyrolog connects capture, personal memory, and reflection in a repeating loop">

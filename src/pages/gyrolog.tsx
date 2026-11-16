@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import type { ReactNode } from 'react';
 import Link from '@docusaurus/Link';
 import Head from '@docusaurus/Head';
@@ -6,103 +5,287 @@ import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 import styles from './gyrolog.module.css';
 
-type PreviewMode = 'capture' | 'pilot' | 'navigator';
+// This page is drawn with the Gyrolog app's own design: its dark theme, type
+// scale, radii and components (gyrolog-monorepo, packages/ui). The icon paths,
+// Day Dial geometry and labels below are copied from that package; every entry
+// shown is fictional sample data.
 
-const previewModes: Array<{
-  id: PreviewMode;
-  name: string;
-  number: string;
-  inputLabel: string;
-  input: string;
-  outputLabel: string;
-  output: string;
-  entries?: Array<{ label: string; text: string }>;
-  stage: string;
-  note: string;
-}> = [
-  {
-    id: 'capture',
-    name: 'Voice Dump',
-    number: '01',
-    inputLabel: 'One dump, in your words',
-    input: '“I studied for 25 minutes after dinner. Starting with one lesson made it easier to begin. I also went for a 20-minute walk.”',
-    outputLabel: 'Two entries to review',
-    output: 'One spoken capture becomes separate Diary entries for you to review before saving.',
-    entries: [
-      { label: 'Diary entry · Learning', text: 'Studied for 25 minutes after dinner. Starting with one lesson made it easier to begin.' },
-      { label: 'Diary entry · Health', text: 'Went for a 20-minute walk.' },
-    ],
-    stage: 'Capture, review, and save are available in the private iPhone Preview.',
-    note: 'Suggested entries · review, edit, or discard before saving',
-  },
-  {
-    id: 'pilot',
-    name: 'Pilot',
-    number: '02',
-    inputLabel: 'A question to think through',
-    input: '“I want to keep learning, but my evenings are busy. What could I aim for?”',
-    outputLabel: 'A direction grounded in your records',
-    output: 'Your Monday and Thursday notes mention starting with one lesson after dinner. Short sessions may be a useful starting point for a goal. Would this intent fit what you want?',
-    stage: 'Pilot conversations are available in the private iPhone Preview.',
-    note: 'Illustrative example · challenge the response before choosing a next step',
-  },
-  {
-    id: 'navigator',
-    name: 'Navigator',
-    number: '03',
-    inputLabel: 'Looking across your notes',
-    input: 'Direction: make room for learning. This week: two short sessions after dinner; one longer session postponed.',
-    outputLabel: 'Drift → Pattern → Plan',
-    output:
-      'Drift: the longer session did not happen. Possible pattern: smaller starts fit your evenings better. Proposed plan: try one short lesson after dinner, then review how it went.',
-    stage: 'Navigator sessions are available in the private iPhone Preview.',
-    note: 'Illustrative example · review the Drift, Pattern, and Plan with your own judgment',
-  },
+type IconShape = ['p', string] | ['c', number, number, number] | ['r', number, number, number, number, number];
+
+const ICONS = {
+  menu: [['p', 'M4 12h16'], ['p', 'M4 6h16'], ['p', 'M4 18h16']],
+  route: [['c', 6, 19, 3], ['p', 'M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15'], ['c', 18, 5, 3]],
+  clock: [['c', 12, 12, 10], ['p', 'M12 6v6l4 2']],
+  flag: [['p', 'M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528']],
+  mic: [['r', 9, 2, 6, 13, 3], ['p', 'M19 10v2a7 7 0 0 1-14 0v-2'], ['p', 'M12 19v3']],
+  compass: [['c', 12, 12, 10], ['p', 'm16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z']],
+  layers: [
+    ['p', 'M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z'],
+    ['p', 'M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12'],
+    ['p', 'M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17'],
+  ],
+  'arrow-up-right': [['p', 'M7 7h10v10'], ['p', 'M7 17 17 7']],
+  'chevron-left': [['p', 'm15 18-6-6 6-6']],
+  'chevron-right': [['p', 'm9 18 6-6-6-6']],
+} satisfies Record<string, IconShape[]>;
+
+function Icon({ name, size = 18 }: { name: keyof typeof ICONS; size?: number }): ReactNode {
+  return (
+    <svg className={styles.icon} width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      {(ICONS[name] as IconShape[]).map((shape, index) => {
+        if (shape[0] === 'p') return <path key={index} d={shape[1]} />;
+        if (shape[0] === 'c') return <circle key={index} cx={shape[1]} cy={shape[2]} r={shape[3]} />;
+        return <rect key={index} x={shape[1]} y={shape[2]} width={shape[3]} height={shape[4]} rx={shape[5]} />;
+      })}
+    </svg>
+  );
+}
+
+type DomainToken = 'accent' | 'coral' | 'olive' | 'sand' | 'teal';
+const domainClass: Record<DomainToken, string> = {
+  accent: styles.domAccent,
+  coral: styles.domCoral,
+  olive: styles.domOlive,
+  sand: styles.domSand,
+  teal: styles.domTeal,
+};
+
+const now = '14:45';
+const entries: Array<{ time: string; domain: string; token: DomainToken; text: string }> = [
+  { time: '07:40', domain: 'Fitness', token: 'coral', text: 'Walked 20 minutes before breakfast.' },
+  { time: '10:15', domain: 'Work', token: 'olive', text: 'Finished the quarterly outline. Starting early helped.' },
+  { time: '13:10', domain: 'Learning', token: 'sand', text: 'One lesson after lunch. A short start felt manageable.' },
+];
+const weekDays: Array<{ name: string; date: number; dots: DomainToken[]; selected?: boolean }> = [
+  { name: 'MON', date: 9, dots: ['olive', 'coral'] },
+  { name: 'TUE', date: 10, dots: ['sand'] },
+  { name: 'WED', date: 11, dots: ['olive', 'teal', 'sand'] },
+  { name: 'THU', date: 12, dots: ['coral', 'olive', 'sand'], selected: true },
+  { name: 'FRI', date: 13, dots: [] },
+  { name: 'SAT', date: 14, dots: [] },
+  { name: 'SUN', date: 15, dots: [] },
+];
+const goals: Array<{ domain: string; token: DomainToken; title: string; detail: string; percent: 67 | 80 }> = [
+  { domain: 'Week', token: 'accent', title: 'Days logged this week', detail: '4 of 5 logged', percent: 80 },
+  { domain: 'Learning', token: 'sand', title: 'Three short lessons', detail: '2 of 3 this week', percent: 67 },
+];
+
+const minutes = (time: string) => Number(time.slice(0, 2)) * 60 + Number(time.slice(3));
+const dialPoint = (radius: number, fraction: number): [number, number] => {
+  const angle = fraction * 2 * Math.PI - Math.PI / 2;
+  return [+(120 + radius * Math.cos(angle)).toFixed(2), +(120 + radius * Math.sin(angle)).toFixed(2)];
+};
+
+/** The app's 24-hour Day Dial: 48 ticks, elapsed ones lit, entries at their times. */
+function DayDial(): ReactNode {
+  const elapsed = minutes(now) / 1440;
+  const [nx1, ny1] = dialPoint(66, elapsed);
+  const [nx2, ny2] = dialPoint(86, elapsed);
+  const [hx, hy] = dialPoint(80, elapsed);
+  return (
+    <svg className={styles.dialSvg} viewBox="0 0 240 240" focusable="false">
+      <defs>
+        <radialGradient id="gyrolog-dial-wash" cx="50%" cy="50%" r="50%">
+          <stop className={`${styles.dialStop} ${styles.dialStopCore}`} offset="0%" />
+          <stop className={`${styles.dialStop} ${styles.dialStopMid}`} offset="70%" />
+          <stop className={`${styles.dialStop} ${styles.dialStopEdge}`} offset="100%" />
+        </radialGradient>
+      </defs>
+      <circle cx="120" cy="120" r="88" fill="url(#gyrolog-dial-wash)" />
+      <circle className={styles.dialTrack} cx="120" cy="120" r="77" />
+      {Array.from({ length: 48 }, (_, index) => {
+        const fraction = index / 48;
+        const cardinal = index % 12 === 0;
+        const [x1, y1] = dialPoint(cardinal ? 74 : 78, fraction);
+        const [x2, y2] = dialPoint(cardinal ? 88 : 85, fraction);
+        const state = fraction <= elapsed ? styles.dialTickElapsed : index === 36 ? styles.dialTickNext : '';
+        return (
+          <line
+            key={index}
+            className={`${styles.dialTick} ${state} ${cardinal ? styles.dialTickCardinal : ''}`}
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+          />
+        );
+      })}
+      <text className={styles.dialHour} x="120" y="22" textAnchor="middle">00:00</text>
+      <text className={styles.dialHour} x="214" y="124" textAnchor="start">06:00</text>
+      <text className={styles.dialHour} x="120" y="226" textAnchor="middle">12:00</text>
+      <text className={styles.dialHour} x="26" y="124" textAnchor="end">18:00</text>
+      {entries.map((entry) => {
+        const [cx, cy] = dialPoint(77, minutes(entry.time) / 1440);
+        return <circle key={entry.time} className={`${styles.dialEntry} ${domainClass[entry.token]}`} cx={cx} cy={cy} r="3.5" />;
+      })}
+      <line className={styles.dialNeedle} x1={nx1} y1={ny1} x2={nx2} y2={ny2} />
+      <circle className={styles.dialNeedleHead} cx={hx} cy={hy} r="4.5" />
+    </svg>
+  );
+}
+
+/** This week, laid out as the app lays it out. */
+function ThisWeek(): ReactNode {
+  return (
+    <figure className={styles.device}>
+      <div
+        className={styles.deviceFrame}
+        role="img"
+        aria-label="Gyrolog's This week screen: the week's days, the Day Dial at 14:45 with three entries, Goal Progress and Today's Log."
+      >
+        <div className={styles.screen} aria-hidden="true">
+          <div className={styles.screenHeader}>
+            <div className={styles.screenBar}>
+              <span className={styles.round}><Icon name="menu" size={19} /></span>
+              <div className={styles.screenTitle}>
+                <strong>Thursday, Nov 12</strong>
+                <span>Good afternoon</span>
+              </div>
+              <span className={`${styles.round} ${styles.roundReview}`}>
+                <Icon name="route" size={19} />
+                <i className={styles.roundState} />
+              </span>
+            </div>
+            <div className={styles.screenWeek}>
+              <Icon name="chevron-left" size={16} />
+              <span>Nov 9 – 15</span>
+              <Icon name="chevron-right" size={16} />
+            </div>
+            <div className={styles.days}>
+              {weekDays.map((day) => (
+                <div className={day.selected ? `${styles.day} ${styles.daySelected}` : styles.day} key={day.date}>
+                  <span className={styles.dayName}>{day.name}</span>
+                  <span className={styles.dayDate}>{day.date}</span>
+                  <span className={styles.dayDots}>
+                    {day.dots.map((token, index) => <i className={`${styles.dot} ${domainClass[token]}`} key={index} />)}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <i className={styles.screenGrabber} />
+          </div>
+          <div className={styles.screenBody}>
+            <div>
+              <div className={styles.sectionHead}>
+                <span className={`${styles.sectionTitle} ${styles.sectionTitleLg}`}><Icon name="clock" size={17} />Day Dial</span>
+                <span className={styles.sectionNote}>Day elapsed · 61%</span>
+              </div>
+              <div className={styles.dialCanvas}>
+                <DayDial />
+                <div className={styles.dialHub}><strong>{now}</strong><span>3 entries</span></div>
+              </div>
+            </div>
+            <div>
+              <div className={styles.sectionHead}>
+                <span className={styles.sectionTitle}><Icon name="flag" size={16} />Goal Progress</span>
+                <span className={styles.sectionNote}>1 of 2 on track</span>
+              </div>
+              <div className={styles.goalsGrid}>
+                {goals.map((goal) => (
+                  <div className={`${styles.goal} ${domainClass[goal.token]}`} key={goal.title}>
+                    <div className={styles.goalTop}>
+                      <span className={styles.badge}>{goal.domain}</span>
+                      <span className={styles.goalPercent}>{goal.percent}%</span>
+                    </div>
+                    <p className={styles.goalTitle}>{goal.title}</p>
+                    <p className={styles.goalDetail}>{goal.detail}</p>
+                    <div className={styles.meter}><i className={goal.percent === 80 ? styles.meterFill80 : styles.meterFill67} /></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className={styles.log}>
+              <div className={styles.sectionHead}>
+                <span className={styles.sectionTitle}>Today's Log<span className={styles.count}>3 entries</span></span>
+                <span className={styles.sectionLink}>View All</span>
+              </div>
+              <div className={styles.logList}>
+                {entries.map((entry) => (
+                  <div className={`${styles.logEntry} ${domainClass[entry.token]}`} key={entry.time}>
+                    <span className={styles.logTime}>{entry.time}</span>
+                    <div className={styles.logBody}>
+                      <div className={styles.logMeta}>
+                        <span className={styles.badge}>{entry.domain}</span>
+                        <Icon name="arrow-up-right" size={16} />
+                      </div>
+                      <p>{entry.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className={styles.capture}>
+            <div className={styles.captureField}><span>What happened?</span><Icon name="mic" size={20} /></div>
+          </div>
+        </div>
+      </div>
+      <figcaption>This week in the app, shown with sample entries.</figcaption>
+    </figure>
+  );
+}
+
+const today = [
+  { role: 'Capture', title: 'Log in your own words', text: 'Type or say what happened. Gyrolog proposes Diary entries, and you review, edit, save, or discard before anything is added to your records.' },
+  { role: 'This week', title: 'See the week as it was', text: 'Each day sits on the Day Dial at the times you logged. Goals and the direction you set for the week stay beside what actually happened.' },
+  { role: 'Weekly review', title: 'Reflect and adjust', text: 'From Sunday evening, look back through Drift, Pattern, and Plan cards that cite your own entries. You accept or correct each one, and the plan stays yours.' },
 ];
 
 const loopSteps = [
-  {
-    number: '01',
-    title: 'Capture reality',
-    text: 'Save the moments before they disappear into the next thing.',
-  },
-  {
-    number: '02',
-    title: 'Organize memory',
-    text: 'Give your notes enough shape to find and understand them later.',
-  },
-  {
-    number: '03',
-    title: 'Name direction',
-    text: 'Keep what matters to you in view as everyday life moves.',
-  },
-  {
-    number: '04',
-    title: 'Reflect with evidence',
-    text: 'Look at what you recorded, with room for more than one reading.',
-  },
-  {
-    number: '05',
-    title: 'Adjust with intention',
-    text: 'Choose a next step that feels right for the life you want.',
-  },
+  { number: '01', title: 'Capture reality', text: 'Save the moments before they disappear into the next thing.' },
+  { number: '02', title: 'Organize memory', text: 'Give your notes enough shape to find and understand them later.' },
+  { number: '03', title: 'Name direction', text: 'Keep what matters to you in view as everyday life moves.' },
+  { number: '04', title: 'Reflect with evidence', text: 'Look at what you recorded, with room for more than one reading.' },
+  { number: '05', title: 'Adjust with intention', text: 'Choose a next step that feels right for the life you want.' },
+];
+
+const personalContext = [
+  { title: 'Diary', role: 'What happened', text: 'A history of moments, observations, and decisions you can return to without reconstructing the week from memory.' },
+  { title: 'Goals', role: 'Where you want to go', text: 'Name a direction in your own words, then read your progress against the records that support it.' },
+  { title: 'Memory', role: 'What stays true', text: 'What Gyrolog keeps about you: statements you made, and observations from reviews you accepted. You can always see it and change it.' },
+];
+
+const reviewEvidence = [
+  { day: 'Monday', time: '19:40', text: 'Studied for 25 minutes after dinner. Starting with one lesson made it easier to begin.' },
+  { day: 'Wednesday', time: '—', text: 'Planned a longer study session. Worked late and postponed it.' },
+  { day: 'Thursday', time: '13:10', text: 'One lesson after lunch. A short start felt manageable.' },
+];
+
+const reviewCards: Array<{ kind: 'drift' | 'pattern' | 'plan'; label: string; icon: keyof typeof ICONS; title: string; text: string; evidence: string[] }> = [
+  { kind: 'drift', label: 'Drift', icon: 'compass', title: 'Two short lessons, one long session postponed', text: 'You planned a longer study session on Wednesday and worked late instead. The two short lessons happened.', evidence: ['Mon 19:40 · Studied 25 minutes after dinner', 'Wed · Worked late, postponed'] },
+  { kind: 'pattern', label: 'Pattern', icon: 'layers', title: 'A small start fits your evenings', text: 'Both lessons began with one unit after a meal. Three notes suggest a possibility, not a fixed trait.', evidence: ['Thu 13:10 · One lesson after lunch'] },
+  { kind: 'plan', label: 'Plan', icon: 'route', title: 'One short lesson after dinner', text: 'Try it three times next week, then look at how it went. Adjust the direction rather than repaying a backlog.', evidence: [] },
+];
+const insightClass = { drift: styles.insightDrift, pattern: styles.insightPattern, plan: styles.insightPlan };
+
+const useCases = [
+  { title: 'Working toward a weight goal', role: 'Everyday routines', text: 'Record a walk, an evening routine, or what made a planned activity difficult. In the Weekly review, look at those records and choose a manageable adjustment.' },
+  { title: 'Making time to build strength', role: 'Training alongside daily life', text: 'Keep notes on completed and missed workouts alongside work and other commitments. The review compares your chosen direction with what actually fit your week.' },
+  { title: 'Returning to unfinished projects', role: 'Work and personal projects', text: 'Capture where a project stalled and what helped you restart. Set it as the most important thing for the week, then see what the week shows.' },
+];
+
+const principles = [
+  { title: 'You stay in control', text: 'Gyrolog can propose a draft. You decide what to edit, save, or discard.' },
+  { title: 'Context has a purpose', text: 'The design calls for reading only relevant, permitted context. More personal data in every request is not the goal.' },
+  { title: 'Real life sets the pace', text: 'The product is designed around useful reflection, without overdue-review debt or guilt for a changed plan. Changing course can be progress, too.' },
+  { title: 'Evidence stays visible', text: 'What you recorded and what an interpretation says are different things. Gyrolog keeps that distinction clear.' },
 ];
 
 const faqs = [
   {
     question: 'Is Gyrolog available now?',
     answer:
-      'Gyrolog 0.13.0 is a private iPhone Preview that its maintainer has tested. It includes Diary capture and review, Pilot conversations, and Navigator sessions. Gyrolog is not publicly available, and there is no public sign-up.',
+      'Gyrolog is a private iPhone Preview. It includes Diary capture with proposed entries to review, This week with the Day Dial and Goals, Memory, and the Weekly review. It is not publicly available, and there is no public sign-up.',
   },
   {
     question: 'Does Gyrolog decide what I should do?',
     answer:
-      'No. Its AI may offer a draft, a question, or a possible pattern. You decide what is accurate, what to keep, and what to do next.',
+      'No. It may offer a draft, a question, or a possible pattern. You decide what is accurate, what to keep, and what to do next.',
   },
   {
     question: 'How is this different from keeping notes?',
     answer:
-      'The private Preview brings Diary records together with Pilot conversations and Navigator sessions. The broader product direction is to connect what happened with personal memory, chosen direction, and reflection.',
+      'Gyrolog keeps what you logged beside the direction you chose. The Weekly review compares the two through Drift, Pattern, and Plan, and what you accept carries into the next week.',
   },
   {
     question: 'Who is Gyrolog being built for?',
@@ -117,123 +300,20 @@ const faqs = [
   {
     question: 'How will my information be handled?',
     answer:
-      'Diary notes are stored on this iPhone and may be included in iPhone Backup. Coaching & voice processing is off until you opt in; Gyrolog sends information when you ask Pilot or Coach a question, or ask it to split a voice capture. A random install ID, token counts, and estimated cost are kept for up to 62 days to support allowance and cost displays. AI providers process requests and may use prompt caching. Turning processing off stops future requests; it cannot recall information already sent.',
+      'Diary notes are stored on this iPhone and may be included in iPhone Backup. AI processing is off until you agree; after that, Gyrolog sends the information needed for the feature you use, such as splitting a capture into entries or running the Weekly review. A random install ID, token counts, and estimated cost are kept for up to 62 days to support Credits and usage displays. AI providers process requests and may use prompt caching. Turning processing off stops future requests; it cannot recall information already sent.',
   },
   {
     question: 'What if AI or the network is unavailable?',
     answer:
-      'Saved Diary records remain on the iPhone. Pilot and voice processing need a network and an enabled Coaching & voice processing setting, so those requests are unavailable while either is off.',
+      'Saved Diary records remain on the iPhone, and you can keep writing notes. Splitting a capture, Memory changes, and the Weekly review need a network and AI processing turned on, so they are unavailable while either is off.',
   },
 ];
-
-const personalContext = [
-  { title: 'Diary', role: 'What happened', text: 'A history of moments, observations, and decisions you can return to without reconstructing the week from memory.' },
-  { title: 'Collections', role: 'What stays useful', text: 'Keep references, ideas, wishlists, and other information together when their value is about a topic rather than a date.' },
-  { title: 'Goals', role: 'Where you want to go', text: 'Name a direction in your own words, then connect progress to the records that support it, with a clear reason for what counts.' },
-];
-
-const useCases = [
-  { title: 'Working toward a weight goal', role: 'Everyday routines', text: 'Record a walk, an evening routine, or what made a planned activity difficult. In a Navigator session, reflect on those records and choose a manageable adjustment.' },
-  { title: 'Making time to build strength', role: 'Training alongside daily life', text: 'Keep notes on completed and missed workouts alongside work and other commitments. The intended reflection loop connects your chosen direction with what actually fit your week.' },
-  { title: 'Returning to unfinished projects', role: 'Work and personal projects', text: 'Capture where a project stalled and what helped you restart. Use Pilot to think through the relevant context and a possible next step.' },
-];
-
-const reviewEvidence = [
-  { day: 'Monday', text: '“Studied for 25 minutes after dinner. Starting with one lesson made it easier to begin.”' },
-  { day: 'Wednesday', text: '“Planned a longer study session. Worked late and postponed it.”' },
-  { day: 'Thursday', text: '“Did one lesson after dinner. A short start felt manageable.”' },
-];
-
-const reviewFindings = [
-  { title: 'Drift', label: 'Compare intention with reality', text: 'You made time for two short sessions. The longer session you planned was postponed.' },
-  { title: 'Pattern', label: 'A reading you can challenge', text: 'A small starting point after dinner may fit your current evenings better. Three notes suggest a possibility, not a fixed trait.' },
-  { title: 'Plan', label: 'An adjustment you choose', text: 'If that reading fits, try one short lesson after dinner next week. Adjust the direction rather than creating a backlog to repay.' },
-];
-
-function ProductPreview(): ReactNode {
-  const [activeMode, setActiveMode] = useState<PreviewMode>('capture');
-  const activeExample = previewModes.find((mode) => mode.id === activeMode)!;
-
-  return (
-    <div className={styles.previewWrap}>
-      <div className={styles.previewOrbit} aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
-      <section className={styles.previewCard} aria-label="Illustrative Gyrolog private Preview example">
-        <div className={styles.previewTopline}>
-          <span className={styles.previewBrand}>
-            <img src="/brand/gyrolog-mark.svg" alt="" width="26" height="26" />
-            <span>gyrolog</span>
-          </span>
-          <span className={styles.previewState}>Private Preview · example data</span>
-        </div>
-
-        <div className={styles.previewHeading}>
-          <div>
-            <span className={styles.previewKicker}>Log your life. Find your balance.</span>
-            <h2>Make room to see the whole picture.</h2>
-          </div>
-          <span className={styles.previewIndex}>{activeExample.number} / 03</span>
-        </div>
-
-        <div className={styles.previewTabs} role="group" aria-label="Choose an illustrative product area">
-          {previewModes.map((mode) => (
-            <button
-              className={activeMode === mode.id ? styles.previewTabActive : styles.previewTab}
-              type="button"
-              key={mode.id}
-              aria-pressed={activeMode === mode.id}
-              onClick={() => setActiveMode(mode.id)}
-            >
-              {mode.name}
-            </button>
-          ))}
-        </div>
-
-        <div className={styles.previewPanel} aria-live="polite" aria-atomic="true">
-          <p className={styles.previewStage}>{activeExample.stage}</p>
-          <div className={styles.previewInput}>
-            <span className={styles.previewLabel}>{activeExample.inputLabel}</span>
-            <p>{activeExample.input}</p>
-          </div>
-          <div className={styles.previewConnector} aria-hidden="true">
-            <span />
-          </div>
-          <div className={styles.previewOutput}>
-            <div className={styles.outputHeading}>
-              <span className={styles.previewLabel}>{activeExample.outputLabel}</span>
-              <span className={styles.reviewMark} aria-hidden="true">↗</span>
-            </div>
-            <p>{activeExample.output}</p>
-            {activeExample.entries && (
-              <ul className={styles.previewEntries}>
-                {activeExample.entries.map((entry) => (
-                  <li className={styles.previewEntry} key={entry.label}>
-                    <span className={styles.previewLabel}>{entry.label}</span>
-                    <p>{entry.text}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <span className={styles.previewNote}>{activeExample.note}</span>
-          </div>
-        </div>
-
-        <p className={styles.previewDisclosure}>
-          Illustrative example with fictional sample data · not an app screenshot
-        </p>
-      </section>
-    </div>
-  );
-}
 
 export default function GyrologPage(): ReactNode {
   return (
     <Layout
       title="Gyrolog — Log your life. Find your balance."
-      description="Gyrolog 0.13.0 is a private iPhone Preview for Diary capture and review, Pilot conversations, and Navigator sessions. It is not publicly available."
+      description="Gyrolog is a private iPhone Preview for Diary capture, This week, and the Weekly review. It is not publicly available."
     >
       <Head>
         <meta property="og:image" content="https://kukso.com/meta/gyrolog-social.png" />
@@ -241,86 +321,66 @@ export default function GyrologPage(): ReactNode {
       </Head>
       <main className={styles.page}>
         <section className={styles.hero}>
-          <div className={styles.heroFrame}>
-            <div className={styles.heroCopy}>
-              <div className={styles.eyebrow}>
-                <span className={styles.eyebrowMark} aria-hidden="true" />
-                <span>Kukso Studios <span className={styles.eyebrowSlash}>/</span> Gyrolog</span>
+          <div className={styles.frame}>
+            <div>
+              <div className={styles.markTile}>
+                <img src="/brand/gyrolog-mark.svg" alt="" width="54" height="54" />
               </div>
+              <p className={styles.label}>Kukso Studios / Gyrolog</p>
               <h1 className={styles.heroTitle}>
-                Log your life.{' '}<span className={styles.accent}>Find your balance.</span>
+                <span>Log your life.</span>
+                <span>Find your balance.</span>
               </h1>
-              <p className={styles.heroLead}>
-                Gyrolog helps you record what happened, keep useful context close, and find a next step that fits your life.
+              <p className={styles.lede}>
+                Gyrolog helps you record what happened, see your week as it was, and find a next step that fits your life.
               </p>
-              <p className={styles.heroBody}>
-                Capture a thought, review the Diary entries it proposes, and save only what you choose. Pilot and Navigator help you think with your records while leaving decisions in your hands.
-              </p>
-              <div className={styles.heroActions}>
-                <a className={styles.primaryAction} href="https://gyrolog.app">
-                  Visit gyrolog.app <span aria-hidden="true">↗</span>
+              <div className={styles.actions}>
+                <a className={`${styles.button} ${styles.buttonPrimary}`} href="https://gyrolog.app">
+                  Visit gyrolog.app
                 </a>
-                <Link className={styles.secondaryAction} to="#how-it-works">
-                  See how it works <span aria-hidden="true">↓</span>
+                <Link className={`${styles.button} ${styles.buttonSecondary}`} to="#how-it-works">
+                  See how it works
                 </Link>
               </div>
-              <p className={styles.statusLine}>
+              <p className={styles.status}>
                 <span className={styles.statusDot} aria-hidden="true" />
-                Private iPhone Preview · v0.13.0 · not publicly available
+                Private iPhone Preview · not publicly available
               </p>
             </div>
-            <ProductPreview />
-          </div>
-          <div className={styles.heroFoot} aria-hidden="true">
-            <span>Log what happened</span>
-            <span className={styles.heroFootRule} />
-            <span>Find your balance</span>
+            <ThisWeek />
           </div>
         </section>
 
-        <section className={styles.stageSection} aria-labelledby="development-stage">
-          <div className={styles.sectionFrame}>
-            <div className={styles.modesIntro}>
-              <span className={styles.sectionEyebrow}>Gyrolog 0.13.0 · private iPhone Preview</span>
-              <Heading as="h2" id="development-stage">What works today.<br /><span className={styles.accent}>What stays yours.</span></Heading>
-              <p>The current Preview has been tested on its maintainer’s iPhone. Diary capture and review, Pilot, and Navigator flows are available; Gyrolog is not publicly available.</p>
+        <section className={styles.section} aria-labelledby="development-stage">
+          <div className={styles.frame}>
+            <div className={styles.intro}>
+              <p className={`${styles.label} ${styles.labelAccent}`}>Private iPhone Preview</p>
+              <Heading as="h2" id="development-stage">What works today. What stays yours.</Heading>
+              <p>The current Preview has been tested on its maintainer’s iPhone. Capture, This week, and the Weekly review are available; Gyrolog is not publicly available.</p>
             </div>
-            <div className={styles.contextCards}>
-              <article className={styles.contextCard}>
-                <span className={styles.contextRole}>Capture &amp; Propose</span>
-                <h3>Capture and review</h3>
-                <p>Turn a voice or typed capture into proposed Diary entries. Review, edit, save, or discard before anything is added to your records.</p>
-              </article>
-              <article className={styles.contextCard}>
-                <span className={styles.contextRole}>Pilot</span>
-                <h3>Think it through</h3>
-                <p>Ask a question and continue a conversation. When you opt in to processing, requests can use the relevant context permitted by your settings.</p>
-              </article>
-              <article className={styles.contextCard}>
-                <span className={styles.contextRole}>Navigator</span>
-                <h3>Reflect and adjust</h3>
-                <p>Review a session through Drift, Pattern, and Plan. The reading stays open to challenge, and the next step remains yours to choose.</p>
-              </article>
+            <div className={styles.cards}>
+              {today.map((item) => (
+                <article className={styles.card} key={item.role}>
+                  <span className={styles.cardRole}>{item.role}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </article>
+              ))}
             </div>
           </div>
         </section>
 
-        <section className={styles.loopSection} aria-labelledby="how-it-works">
-          <div className={styles.sectionFrame}>
-            <div className={styles.sectionIntro}>
-              <span className={styles.sectionEyebrow}>The Gyrolog loop</span>
-              <Heading as="h2" id="how-it-works">From what happened to <span className={styles.accent}>what comes next.</span></Heading>
-              <p>
-                Organization is the groundwork. The point is seeing how your lived experience connects to the direction you want to take.
-              </p>
+        <section className={styles.section} aria-labelledby="how-it-works">
+          <div className={styles.frame}>
+            <div className={styles.intro}>
+              <p className={`${styles.label} ${styles.labelAccent}`}>The Gyrolog loop</p>
+              <Heading as="h2" id="how-it-works">From what happened to what comes next.</Heading>
+              <p>Organization is the groundwork. The point is seeing how your lived experience connects to the direction you want to take.</p>
             </div>
-            <ol className={styles.loopSteps}>
-              {loopSteps.map((step, index) => (
-                <li className={styles.loopStep} key={step.number}>
-                  <div className={styles.stepMarker}>
-                    <span>{step.number}</span>
-                    {index < loopSteps.length - 1 && <i aria-hidden="true" />}
-                  </div>
+            <ol className={styles.rows}>
+              {loopSteps.map((step) => (
+                <li className={styles.row} key={step.number}>
+                  <span className={styles.rowIndex} aria-hidden="true">{step.number}</span>
                   <h3>{step.title}</h3>
                   <p>{step.text}</p>
                 </li>
@@ -329,106 +389,80 @@ export default function GyrologPage(): ReactNode {
           </div>
         </section>
 
-        <section className={styles.contextSection} aria-labelledby="personal-context">
-          <div className={styles.sectionFrame}>
-            <div className={styles.modesIntro}>
-              <span className={styles.sectionEyebrow}>The product direction beneath the conversation</span>
-              <Heading as="h2" id="personal-context">Your life has context.<br /><span className={styles.accent}>Keep it connected.</span></Heading>
-              <p>Gyrolog’s product direction brings together three foundations. These describe the system being built, rather than a claim that every capability is available in the current Preview. Useful history belongs in your records, beyond any one conversation.</p>
+        <section className={styles.section} aria-labelledby="personal-context">
+          <div className={styles.frame}>
+            <div className={styles.intro}>
+              <p className={`${styles.label} ${styles.labelAccent}`}>What Gyrolog keeps</p>
+              <Heading as="h2" id="personal-context">Your life has context. Keep it connected.</Heading>
+              <p>Three kinds of record sit under every review. Useful history belongs in your records, where you can read and change it.</p>
             </div>
-            <div className={styles.contextCards}>
+            <div className={styles.cards}>
               {personalContext.map((item) => (
-                <article className={styles.contextCard} key={item.title}>
-                  <span className={styles.contextRole}>{item.role}</span>
+                <article className={styles.card} key={item.title}>
+                  <span className={styles.cardRole}>{item.role}</span>
                   <h3>{item.title}</h3>
                   <p>{item.text}</p>
                 </article>
               ))}
             </div>
-            <p className={styles.audienceNote}>Our initial focus: people whose learning, work, and personal projects span several tools. Bring daily records and chosen goals together so the next review starts with context.</p>
+            <p className={styles.note}>Our initial focus: people whose learning, work, and personal projects span several tools. Bring daily records and chosen goals together so the next review starts with context.</p>
           </div>
         </section>
 
-        <section className={styles.modesSection}>
-          <div className={styles.sectionFrame}>
-            <div className={styles.modesIntro}>
-              <span className={styles.sectionEyebrow}>Three ways to work with your life</span>
-              <h2>Capture the moment.<br /><span className={styles.accent}>Find your bearings.</span></h2>
-              <p>
-                The private Preview brings capture, Pilot conversations, and Navigator sessions together. AI suggestions remain reviewable; you decide what to keep and what to do next.
-              </p>
-            </div>
-            <div className={styles.modeCards}>
-              <article className={styles.modeCard}>
-                <span className={styles.modeNumber}>01 <span>Capture</span></span>
-                <h3>Voice Dump</h3>
-                <p>Speak or type an unpolished thought, then review the proposed Diary entries before saving or discarding them.</p>
-                <span className={styles.modeFoot}>Your words, still yours</span>
-              </article>
-              <article className={styles.modeCard}>
-                <span className={styles.modeNumber}>02 <span>Assistant</span></span>
-                <h3>Pilot</h3>
-                <p>Ask an open-ended question and continue the conversation. With processing enabled, Pilot can use relevant context permitted by your settings.</p>
-                <span className={styles.modeFoot}>A thought partner, on your terms</span>
-              </article>
-              <article className={styles.modeCard}>
-                <span className={styles.modeNumber}>03 <span>Coaching</span></span>
-                <h3>Navigator</h3>
-                <p>Review a meaningful period through Drift, Pattern, and Plan. Compare intention with reality, challenge a possible pattern, and choose an adjustment worth carrying forward.</p>
-                <span className={styles.modeFoot}>Discovery without judgment</span>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.reviewSection} aria-labelledby="weekly-review">
-          <div className={styles.sectionFrame}>
-            <div className={styles.sectionIntro}>
-              <span className={styles.sectionEyebrow}>Navigator · an illustrative weekly review</span>
-              <Heading as="h2" id="weekly-review">A better next week starts with <span className={styles.accent}>this one.</span></Heading>
+        <section className={styles.section} aria-labelledby="weekly-review">
+          <div className={styles.frame}>
+            <div className={styles.intro}>
+              <p className={`${styles.label} ${styles.labelAccent}`}>The Weekly review</p>
+              <Heading as="h2" id="weekly-review">A better next week starts with this one.</Heading>
               <p>Reflection comes before direction. Here is how a few ordinary records could inform a small adjustment, with room to correct the interpretation.</p>
             </div>
-            <div className={styles.reviewGrid}>
-              <div className={styles.evidenceCard}>
-                <h3>The recorded week</h3>
-                <p className={styles.evidenceDirection}>Chosen direction: make room for learning.</p>
-                <ul className={styles.evidenceList}>
+            <div className={styles.review}>
+              <div className={styles.card}>
+                <span className={styles.cardRole}>The recorded week</span>
+                <h3>Becoming someone who makes room for learning</h3>
+                <ul className={styles.evidence}>
                   {reviewEvidence.map((record) => (
-                    <li key={record.day}><span>{record.day}</span><p>{record.text}</p></li>
+                    <li key={record.day}>
+                      <span className={styles.evidenceTime}>{record.day} · {record.time}</span>
+                      <p>{record.text}</p>
+                    </li>
                   ))}
                 </ul>
               </div>
-              <div className={styles.findingsCard}>
-                <h3>A possible reading to review</h3>
-                <dl className={styles.findingsList}>
-                  {reviewFindings.map((finding) => (
-                    <div key={finding.title}>
-                      <dt>{finding.title}<span>{finding.label}</span></dt>
-                      <dd>{finding.text}</dd>
+              <div className={styles.insights}>
+                {reviewCards.map((card) => (
+                  <article className={`${styles.insight} ${insightClass[card.kind]}`} key={card.kind}>
+                    <p className={styles.insightKind}><span><Icon name={card.icon} size={12} />{card.label}</span></p>
+                    <h3>{card.title}</h3>
+                    <p className={styles.insightBody}>{card.text}</p>
+                    {card.evidence.length > 0 && (
+                      <ul className={styles.insightEvidence}>
+                        {card.evidence.map((line) => <li key={line}>{line}</li>)}
+                      </ul>
+                    )}
+                    <div className={styles.insightActions} aria-hidden="true">
+                      <span className={`${styles.chip} ${styles.chipPrimary}`}>Accept</span>
+                      <span className={styles.chip}>Correct</span>
                     </div>
-                  ))}
-                </dl>
+                  </article>
+                ))}
               </div>
             </div>
-            <div className={styles.carryover}>
-              <h3>Carry the learning forward.</h3>
-              <p>A completed review is intended to bring the useful summary and your agreed plan into the next week. Earlier interpretations remain open to revision; a remembered pattern still needs fresh evidence.</p>
-            </div>
-            <p className={styles.conceptNote}>Fictional records illustrating the product direction, not a live review or app screenshot.</p>
+            <p className={styles.note}>A finalized review carries its plan into the next week. Earlier interpretations stay open to revision; a remembered pattern still needs fresh evidence. Sample records, shown as the app shows them.</p>
           </div>
         </section>
 
-        <section className={styles.stageSection} aria-labelledby="use-cases">
-          <div className={styles.sectionFrame}>
-            <div className={styles.modesIntro}>
-              <span className={styles.sectionEyebrow}>Illustrative use cases</span>
-              <Heading as="h2" id="use-cases">Different directions.<br /><span className={styles.accent}>The same reflection loop.</span></Heading>
-              <p>Three illustrative scenarios for the product we’re building: recording everyday experience, reflecting on it, and choosing a next step.</p>
+        <section className={styles.section} aria-labelledby="use-cases">
+          <div className={styles.frame}>
+            <div className={styles.intro}>
+              <p className={`${styles.label} ${styles.labelAccent}`}>Illustrative use cases</p>
+              <Heading as="h2" id="use-cases">Different directions. The same reflection loop.</Heading>
+              <p>Three illustrative scenarios: recording everyday experience, reflecting on it, and choosing a next step.</p>
             </div>
-            <div className={styles.contextCards}>
+            <div className={styles.cards}>
               {useCases.map((item) => (
-                <article className={styles.contextCard} key={item.title}>
-                  <span className={styles.contextRole}>{item.role}</span>
+                <article className={styles.card} key={item.title}>
+                  <span className={styles.cardRole}>{item.role}</span>
                   <h3>{item.title}</h3>
                   <p>{item.text}</p>
                 </article>
@@ -437,50 +471,29 @@ export default function GyrologPage(): ReactNode {
           </div>
         </section>
 
-        <section className={styles.principlesSection}>
-          <div className={styles.sectionFrame}>
-            <div className={styles.principlesHeading}>
-              <span className={styles.sectionEyebrow}>Built around your judgment</span>
-              <h2>Useful intelligence.<br /><span className={styles.accent}>A human point of view.</span></h2>
+        <section className={styles.section} aria-labelledby="principles">
+          <div className={styles.frame}>
+            <div className={styles.intro}>
+              <p className={`${styles.label} ${styles.labelAccent}`}>Built around your judgment</p>
+              <Heading as="h2" id="principles">Useful intelligence. A human point of view.</Heading>
             </div>
-            <div className={styles.principlesList}>
-              <article>
-                <span className={styles.principleIndex}>A</span>
-                <div>
-                  <h3>You stay in control</h3>
-                  <p>AI can propose a draft. You decide what to edit, save, or discard.</p>
-                </div>
-              </article>
-              <article>
-                <span className={styles.principleIndex}>B</span>
-                <div>
-                  <h3>Context has a purpose</h3>
-                  <p>The design calls for retrieving only relevant, permitted context. More personal data in every conversation is not the goal.</p>
-                </div>
-              </article>
-              <article>
-                <span className={styles.principleIndex}>C</span>
-                <div>
-                  <h3>Real life sets the pace</h3>
-                  <p>The product is designed around useful reflection, without overdue-review debt or guilt for a changed plan. Changing course can be progress, too.</p>
-                </div>
-              </article>
-              <article>
-                <span className={styles.principleIndex}>D</span>
-                <div>
-                  <h3>Evidence stays visible</h3>
-                  <p>What you recorded and what an AI might infer are different things. Gyrolog is being designed to keep that distinction clear.</p>
-                </div>
-              </article>
-            </div>
+            <ol className={styles.rows}>
+              {principles.map((principle, index) => (
+                <li className={styles.row} key={principle.title}>
+                  <span className={styles.rowIndex} aria-hidden="true">{`0${index + 1}`}</span>
+                  <h3>{principle.title}</h3>
+                  <p>{principle.text}</p>
+                </li>
+              ))}
+            </ol>
           </div>
         </section>
 
-        <section className={styles.faqSection}>
-          <div className={styles.sectionFrame}>
-            <div className={styles.faqHeading}>
-              <span className={styles.sectionEyebrow}>A few clear answers</span>
-              <h2>Where Gyrolog stands.</h2>
+        <section className={styles.section} aria-labelledby="faq">
+          <div className={`${styles.frame} ${styles.faq}`}>
+            <div className={styles.intro}>
+              <p className={`${styles.label} ${styles.labelAccent}`}>A few clear answers</p>
+              <Heading as="h2" id="faq">Where Gyrolog stands.</Heading>
             </div>
             <div className={styles.faqList}>
               {faqs.map((faq) => (
@@ -493,16 +506,15 @@ export default function GyrologPage(): ReactNode {
           </div>
         </section>
 
-        <section className={styles.contactSection}>
-          <div className={styles.contactFrame}>
-            <img src="/brand/gyrolog-mark.svg" alt="" width="50" height="50" />
-            <span className={styles.sectionEyebrow}>Gyrolog — Log your life. Find your balance.</span>
-            <h2>Find your balance, one honest log at a time.</h2>
-            <p>Gyrolog is a private iPhone Preview and is not publicly available. Visit the Gyrolog site for current information.</p>
-            <a className={styles.primaryAction} href="https://gyrolog.app">
-              Visit gyrolog.app <span aria-hidden="true">↗</span>
+        <section className={styles.section}>
+          <div className={`${styles.frame} ${styles.contact}`}>
+            <div>
+              <h2>Find your balance, one honest log at a time.</h2>
+              <p>Gyrolog is a private iPhone Preview and is not publicly available. Visit the Gyrolog site for current information, or write to tech@kukso.com.</p>
+            </div>
+            <a className={`${styles.button} ${styles.buttonPrimary}`} href="https://gyrolog.app">
+              Visit gyrolog.app
             </a>
-            <span className={styles.contactAddress}>tech@kukso.com</span>
           </div>
         </section>
       </main>

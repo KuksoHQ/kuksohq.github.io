@@ -14,7 +14,7 @@ export interface Project {
 export const PROJECTS: Project[] = [
     {
         title: 'Gyrolog',
-        description: 'A private iPhone Preview for Diary capture and review, Pilot conversations, and Navigator sessions.',
+        description: 'A private iPhone Preview for Diary capture, This week, and the Weekly review.',
         tags: ['Personal OS', 'AI', 'Mobile'],
         status: 'Alpha',
         image: '/brand/gyrolog-mark.svg',
