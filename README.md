@@ -20,16 +20,14 @@ a multi-resolution ICO fallback and a 180px Apple touch icon. The legacy
 same mark; `studio-icon.png` is the 512px square icon export.
 
 - `/` introduces Kukso Studios and its current portfolio.
-- `/gyrolog` presents the private iPhone Preview, its product loop, Capture, This
-  week, and the Weekly review. It is drawn with the Gyrolog app's own dark theme,
-  type scale, radii and components, copied from `packages/ui` in the Gyrolog
-  repository; update the token block at the top of `gyrolog.module.css` from
-  there rather than editing values in place. The This week figure is a
-  screenshot of the iPhone app (`static/img/gyrolog/this-week-dark.webp`), the
-  same file gyrolog.app serves from `apps/website/screenshots` in the Gyrolog
-  repository; copy it from there when it is retaken. The review cards are
-  drawings, not app screenshots. Both show fictional sample data, and the page
-  links to [gyrolog.app](https://gyrolog.app).
+- `/gyrolog` is a short project card in Kukso's own design: what Gyrolog is, its
+  three surfaces, one screenshot, and a link to [gyrolog.app](https://gyrolog.app).
+  The product site is the one place that describes Gyrolog in full, so keep this
+  page to a summary. It reuses the homepage styles in `src/pages/index.module.css`;
+  `gyrolog.module.css` holds only the screenshot frame. The screenshot
+  (`static/img/gyrolog/this-week-dark.webp`) is the file gyrolog.app serves from
+  `apps/website/screenshots` in the Gyrolog repository and shows fictional sample
+  data; copy it from there when it is retaken.
 - `/projects` lists the portfolio with category filters and search. Project data,
   links, and release status live in `src/data/projects.ts`.
 - Existing documentation, API reference destinations, and legal pages remain available.
@@ -38,9 +36,9 @@ The Gyrolog page links to the product site instead of offering a signup form.
 Keep availability, pricing, and integration claims aligned with the product's
 actual state when updating the copy.
 
-Gyrolog's narrative and typography follow the canonical `PRODUCT.md` and
-`DESIGN.md` in the Gyrolog repository. These describe long-term direction, not a
-guarantee that every feature ships today. Instrument Sans is served locally from
+Gyrolog's narrative follows the canonical `PRODUCT.md` in the Gyrolog
+repository. It describes long-term direction, not a guarantee that every feature
+ships today. Instrument Sans is served locally from
 `static/fonts/instrument-sans/`; its SIL Open Font License is included in `OFL.txt`.
 
 Social share images are committed in `static/meta/`. To regenerate them, run
