@@ -6,27 +6,22 @@ import Heading from '@theme/Heading';
 import styles from './gyrolog.module.css';
 
 // This page is drawn with the Gyrolog app's own design: its dark theme, type
-// scale, radii and components (gyrolog-monorepo, packages/ui). The icon paths,
-// Day Dial geometry and labels below are copied from that package; every entry
-// shown is fictional sample data.
+// scale, radii and components (gyrolog-monorepo, packages/ui). The This week
+// figure is a screenshot of the iPhone app, the same file gyrolog.app serves
+// (gyrolog-monorepo, apps/website/screenshots). The review cards are drawn
+// here with icon paths and labels copied from that package. Every entry shown
+// is fictional sample data.
 
 type IconShape = ['p', string] | ['c', number, number, number] | ['r', number, number, number, number, number];
 
 const ICONS = {
-  menu: [['p', 'M4 12h16'], ['p', 'M4 6h16'], ['p', 'M4 18h16']],
   route: [['c', 6, 19, 3], ['p', 'M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15'], ['c', 18, 5, 3]],
-  clock: [['c', 12, 12, 10], ['p', 'M12 6v6l4 2']],
-  flag: [['p', 'M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528']],
-  mic: [['r', 9, 2, 6, 13, 3], ['p', 'M19 10v2a7 7 0 0 1-14 0v-2'], ['p', 'M12 19v3']],
   compass: [['c', 12, 12, 10], ['p', 'm16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z']],
   layers: [
     ['p', 'M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z'],
     ['p', 'M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12'],
     ['p', 'M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17'],
   ],
-  'arrow-up-right': [['p', 'M7 7h10v10'], ['p', 'M7 17 17 7']],
-  'chevron-left': [['p', 'm15 18-6-6 6-6']],
-  'chevron-right': [['p', 'm9 18 6-6-6-6']],
 } satisfies Record<string, IconShape[]>;
 
 function Icon({ name, size = 18 }: { name: keyof typeof ICONS; size?: number }): ReactNode {
@@ -41,186 +36,20 @@ function Icon({ name, size = 18 }: { name: keyof typeof ICONS; size?: number }):
   );
 }
 
-type DomainToken = 'accent' | 'coral' | 'olive' | 'sand' | 'teal';
-const domainClass: Record<DomainToken, string> = {
-  accent: styles.domAccent,
-  coral: styles.domCoral,
-  olive: styles.domOlive,
-  sand: styles.domSand,
-  teal: styles.domTeal,
-};
-
-const now = '14:45';
-const entries: Array<{ time: string; domain: string; token: DomainToken; text: string }> = [
-  { time: '07:40', domain: 'Fitness', token: 'coral', text: 'Walked 20 minutes before breakfast.' },
-  { time: '10:15', domain: 'Work', token: 'olive', text: 'Finished the quarterly outline. Starting early helped.' },
-  { time: '13:10', domain: 'Learning', token: 'sand', text: 'One lesson after lunch. A short start felt manageable.' },
-];
-const weekDays: Array<{ name: string; date: number; dots: DomainToken[]; selected?: boolean }> = [
-  { name: 'MON', date: 9, dots: ['olive', 'coral'] },
-  { name: 'TUE', date: 10, dots: ['sand'] },
-  { name: 'WED', date: 11, dots: ['olive', 'teal', 'sand'] },
-  { name: 'THU', date: 12, dots: ['coral', 'olive', 'sand'], selected: true },
-  { name: 'FRI', date: 13, dots: [] },
-  { name: 'SAT', date: 14, dots: [] },
-  { name: 'SUN', date: 15, dots: [] },
-];
-const goals: Array<{ domain: string; token: DomainToken; title: string; detail: string; percent: 67 | 80 }> = [
-  { domain: 'Week', token: 'accent', title: 'Days logged this week', detail: '4 of 5 logged', percent: 80 },
-  { domain: 'Learning', token: 'sand', title: 'Three short lessons', detail: '2 of 3 this week', percent: 67 },
-];
-
-const minutes = (time: string) => Number(time.slice(0, 2)) * 60 + Number(time.slice(3));
-const dialPoint = (radius: number, fraction: number): [number, number] => {
-  const angle = fraction * 2 * Math.PI - Math.PI / 2;
-  return [+(120 + radius * Math.cos(angle)).toFixed(2), +(120 + radius * Math.sin(angle)).toFixed(2)];
-};
-
-/** The app's 24-hour Day Dial: 48 ticks, elapsed ones lit, entries at their times. */
-function DayDial(): ReactNode {
-  const elapsed = minutes(now) / 1440;
-  const [nx1, ny1] = dialPoint(66, elapsed);
-  const [nx2, ny2] = dialPoint(86, elapsed);
-  const [hx, hy] = dialPoint(80, elapsed);
-  return (
-    <svg className={styles.dialSvg} viewBox="0 0 240 240" focusable="false">
-      <defs>
-        <radialGradient id="gyrolog-dial-wash" cx="50%" cy="50%" r="50%">
-          <stop className={`${styles.dialStop} ${styles.dialStopCore}`} offset="0%" />
-          <stop className={`${styles.dialStop} ${styles.dialStopMid}`} offset="70%" />
-          <stop className={`${styles.dialStop} ${styles.dialStopEdge}`} offset="100%" />
-        </radialGradient>
-      </defs>
-      <circle cx="120" cy="120" r="88" fill="url(#gyrolog-dial-wash)" />
-      <circle className={styles.dialTrack} cx="120" cy="120" r="77" />
-      {Array.from({ length: 48 }, (_, index) => {
-        const fraction = index / 48;
-        const cardinal = index % 12 === 0;
-        const [x1, y1] = dialPoint(cardinal ? 74 : 78, fraction);
-        const [x2, y2] = dialPoint(cardinal ? 88 : 85, fraction);
-        const state = fraction <= elapsed ? styles.dialTickElapsed : index === 36 ? styles.dialTickNext : '';
-        return (
-          <line
-            key={index}
-            className={`${styles.dialTick} ${state} ${cardinal ? styles.dialTickCardinal : ''}`}
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-          />
-        );
-      })}
-      <text className={styles.dialHour} x="120" y="22" textAnchor="middle">00:00</text>
-      <text className={styles.dialHour} x="214" y="124" textAnchor="start">06:00</text>
-      <text className={styles.dialHour} x="120" y="226" textAnchor="middle">12:00</text>
-      <text className={styles.dialHour} x="26" y="124" textAnchor="end">18:00</text>
-      {entries.map((entry) => {
-        const [cx, cy] = dialPoint(77, minutes(entry.time) / 1440);
-        return <circle key={entry.time} className={`${styles.dialEntry} ${domainClass[entry.token]}`} cx={cx} cy={cy} r="3.5" />;
-      })}
-      <line className={styles.dialNeedle} x1={nx1} y1={ny1} x2={nx2} y2={ny2} />
-      <circle className={styles.dialNeedleHead} cx={hx} cy={hy} r="4.5" />
-    </svg>
-  );
-}
-
-/** This week, laid out as the app lays it out. */
+/** This week: a screenshot of the iPhone app in its dark theme, with sample entries. */
 function ThisWeek(): ReactNode {
   return (
     <figure className={styles.device}>
-      <div
-        className={styles.deviceFrame}
-        role="img"
-        aria-label="Gyrolog's This week screen: the week's days, the Day Dial at 14:45 with three entries, Goal Progress and Today's Log."
-      >
-        <div className={styles.screen} aria-hidden="true">
-          <div className={styles.screenHeader}>
-            <div className={styles.screenBar}>
-              <span className={styles.round}><Icon name="menu" size={19} /></span>
-              <div className={styles.screenTitle}>
-                <strong>Thursday, Nov 12</strong>
-                <span>Good afternoon</span>
-              </div>
-              <span className={`${styles.round} ${styles.roundReview}`}>
-                <Icon name="route" size={19} />
-                <i className={styles.roundState} />
-              </span>
-            </div>
-            <div className={styles.screenWeek}>
-              <Icon name="chevron-left" size={16} />
-              <span>Nov 9 – 15</span>
-              <Icon name="chevron-right" size={16} />
-            </div>
-            <div className={styles.days}>
-              {weekDays.map((day) => (
-                <div className={day.selected ? `${styles.day} ${styles.daySelected}` : styles.day} key={day.date}>
-                  <span className={styles.dayName}>{day.name}</span>
-                  <span className={styles.dayDate}>{day.date}</span>
-                  <span className={styles.dayDots}>
-                    {day.dots.map((token, index) => <i className={`${styles.dot} ${domainClass[token]}`} key={index} />)}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <i className={styles.screenGrabber} />
-          </div>
-          <div className={styles.screenBody}>
-            <div>
-              <div className={styles.sectionHead}>
-                <span className={`${styles.sectionTitle} ${styles.sectionTitleLg}`}><Icon name="clock" size={17} />Day Dial</span>
-                <span className={styles.sectionNote}>Day elapsed · 61%</span>
-              </div>
-              <div className={styles.dialCanvas}>
-                <DayDial />
-                <div className={styles.dialHub}><strong>{now}</strong><span>3 entries</span></div>
-              </div>
-            </div>
-            <div>
-              <div className={styles.sectionHead}>
-                <span className={styles.sectionTitle}><Icon name="flag" size={16} />Goal Progress</span>
-                <span className={styles.sectionNote}>1 of 2 on track</span>
-              </div>
-              <div className={styles.goalsGrid}>
-                {goals.map((goal) => (
-                  <div className={`${styles.goal} ${domainClass[goal.token]}`} key={goal.title}>
-                    <div className={styles.goalTop}>
-                      <span className={styles.badge}>{goal.domain}</span>
-                      <span className={styles.goalPercent}>{goal.percent}%</span>
-                    </div>
-                    <p className={styles.goalTitle}>{goal.title}</p>
-                    <p className={styles.goalDetail}>{goal.detail}</p>
-                    <div className={styles.meter}><i className={goal.percent === 80 ? styles.meterFill80 : styles.meterFill67} /></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className={styles.log}>
-              <div className={styles.sectionHead}>
-                <span className={styles.sectionTitle}>Today's Log<span className={styles.count}>3 entries</span></span>
-                <span className={styles.sectionLink}>View All</span>
-              </div>
-              <div className={styles.logList}>
-                {entries.map((entry) => (
-                  <div className={`${styles.logEntry} ${domainClass[entry.token]}`} key={entry.time}>
-                    <span className={styles.logTime}>{entry.time}</span>
-                    <div className={styles.logBody}>
-                      <div className={styles.logMeta}>
-                        <span className={styles.badge}>{entry.domain}</span>
-                        <Icon name="arrow-up-right" size={16} />
-                      </div>
-                      <p>{entry.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className={styles.capture}>
-            <div className={styles.captureField}><span>What happened?</span><Icon name="mic" size={20} /></div>
-          </div>
-        </div>
+      <div className={styles.deviceFrame}>
+        <img
+          className={styles.deviceShot}
+          src="/img/gyrolog/this-week-dark.webp"
+          width={780}
+          height={1694}
+          alt="Gyrolog's This week screen on iPhone: Tuesday in the week strip, the Week direction card, the Day Dial at 10:41 with three entries, and the capture bar."
+        />
       </div>
-      <figcaption>This week in the app, shown with sample entries.</figcaption>
+      <figcaption>This week on iPhone, shown with sample entries.</figcaption>
     </figure>
   );
 }

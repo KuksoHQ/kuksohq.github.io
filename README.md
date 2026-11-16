@@ -24,9 +24,12 @@ same mark; `studio-icon.png` is the 512px square icon export.
   week, and the Weekly review. It is drawn with the Gyrolog app's own dark theme,
   type scale, radii and components, copied from `packages/ui` in the Gyrolog
   repository; update the token block at the top of `gyrolog.module.css` from
-  there rather than editing values in place. The This week screen and the review
-  cards are drawings with fictional sample data, not app screenshots, and the
-  page links to [gyrolog.app](https://gyrolog.app).
+  there rather than editing values in place. The This week figure is a
+  screenshot of the iPhone app (`static/img/gyrolog/this-week-dark.webp`), the
+  same file gyrolog.app serves from `apps/website/screenshots` in the Gyrolog
+  repository; copy it from there when it is retaken. The review cards are
+  drawings, not app screenshots. Both show fictional sample data, and the page
+  links to [gyrolog.app](https://gyrolog.app).
 - `/projects` lists the portfolio with category filters and search. Project data,
   links, and release status live in `src/data/projects.ts`.
 - Existing documentation, API reference destinations, and legal pages remain available.
