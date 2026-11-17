@@ -50,7 +50,7 @@ export default function GyrologPage(): ReactNode {
                   src="/img/gyrolog/this-week-dark.webp"
                   width={780}
                   height={1694}
-                  alt="Gyrolog's This week screen on iPhone: Tuesday in the week strip, the Week direction card, the Day Dial at 10:41 with three entries, and the capture bar."
+                  alt="Gyrolog's This week screen on iPhone: Tuesday in the week strip, the week's direction and Goals lines, the Day Dial at 13:25 with three entries, and today's log under it."
                 />
               </div>
               <figcaption>This week on iPhone, shown with sample entries.</figcaption>
